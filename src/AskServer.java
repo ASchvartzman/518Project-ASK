@@ -29,6 +29,25 @@ public class AskServer extends Thread {
         }
     }
     
+    public String handleRequest(String input) {
+        String[] parsedRequest = input.split(" ");
+        if (parsedRequest[0].equals("insert")) {
+            // then call some function here which whill insert points
+            return "Inserted a point!";
+        }
+        else if (parsedRequest.equals("delete")){
+            // then call some function here which will delete a point
+            return "Delete a point!";
+        }
+        else if (parsedRequest.equals("query")){
+            // then call some function here which will query a point
+            return "Queried a point!";
+        }
+        else {
+            return "Error!?";
+        }
+    }
+    
     public static void main(String [] args){
        
         try{ 
