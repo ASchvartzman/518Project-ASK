@@ -11,7 +11,7 @@ public class AskClient{
             objectOutputStream.writeObject(new TestQuery("Does this work?"));
             Object object = objectInputStream.readObject();
             if(object instanceof TestResult){
-                System.out.println("Received a Result Query: "+((TestResult) object).test);
+                System.out.println("Received a Test Result: "+((TestResult) object).test);
             }
             else {
                 System.out.println("The Result Object wasn't of the right kind.");

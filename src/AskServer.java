@@ -16,7 +16,7 @@ public class AskServer extends Thread {
             Object object = objectInputStream.readObject();
             if(object instanceof TestQuery){
                 System.out.println("Received a Test Query: "+((TestQuery) object).test);
-                objectOutputStream.writeObject(new TestResult("It does"));
+                objectOutputStream.writeObject(new TestResult("It does."));
             }
             else {
                 System.out.println("The Query Object wasn't of the right kind.");
