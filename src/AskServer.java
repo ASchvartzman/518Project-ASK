@@ -2,61 +2,45 @@ import java.net.*;
 import java.io.*;
 
 public class AskServer extends Thread {
-    
-    ServerSocket server; 
-    
-    public AskServer() throws Exception
-    {
-        server = new ServerSocket(1234); 
-        server.setSoTimeout(10000);
+
+    Socket socket;
+
+    public AskServer(Socket inputSocket){
+        socket = inputSocket;
     }
     
     public void run(){
-        while(true){
-            PrintWriter out; 
-            BufferedReader in; 
-            Socket client; 
-            try{
-                client = server.accept(); 
-                out = new PrintWriter(client.getOutputStream(), true); 
-                in = new BufferedReader(new InputStreamReader(client.getInputStream()));  
-                out.println("Hello Darkness my old friend!");
-                client.close();
+        try{
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            Object object = objectInputStream.readObject();
+            if(object instanceof TestQuery){
+                System.out.println("Received a Test Query: "+((TestQuery) object).test);
+                objectOutputStream.writeObject(new TestResult("It does"));
             }
-            catch(Exception e){
-                System.out.println("An error has occured!"); 
+            else {
+                System.out.println("The Query Object wasn't of the right kind.");
             }
+            objectInputStream.close();
+            objectOutputStream.close();
+            socket.close();
         }
-    }
-    
-    public String handleRequest(String input) {
-        String[] parsedRequest = input.split(" ");
-        if (parsedRequest[0].equals("insert")) {
-            // then call some function here which whill insert points
-            return "Inserted a point!";
-        }
-        else if (parsedRequest.equals("delete")){
-            // then call some function here which will delete a point
-            return "Delete a point!";
-        }
-        else if (parsedRequest.equals("query")){
-            // then call some function here which will query a point
-            return "Queried a point!";
-        }
-        else {
-            return "Error!?";
+        catch (Exception e){
+            e.printStackTrace();
         }
     }
     
     public static void main(String [] args){
-       
-        try{ 
-            Thread t = new AskServer();
-            t.start();
+        try {
+            ServerSocket serverSocket = new ServerSocket(1234);
+            while(true){
+                Socket socket = serverSocket.accept();
+                AskServer askServer = new AskServer(socket);
+                askServer.start();
+            }
         }
-        catch(Exception e){
-            System.out.println("Error! AAAAAAh!"); 
+        catch (IOException e){
+            e.printStackTrace();
         }
-        ServerSocket server; 
     }
 }

@@ -3,43 +3,24 @@ import java.io.*;
 
 public class AskClient{
     
-    public static AskServer server;
-    public static Socket client;
-    
-    public AskClient(Socket MyClient, AskServer MyServer){
-        client = MyClient;
-        server = MyServer;
-    }
-    
     public static void main(String [] args) throws Exception{
-        
-        PrintWriter out; 
-        BufferedReader in; 
-        client = new Socket ("140.180.189.48", 1234); 
-        try{
-            out = new PrintWriter(client.getOutputStream(), true); 
-            in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            try{
-                for (String line =in.readLine(); line!=null; line=in.readLine()) {
-                    //Getting null pointer error here. I need to define the server somewhere, 
-                    // but i think that it cant be here. 
-                    String output = server.handleRequest(line);
-                    out.println(output);
-                } 
+        Socket socket = new Socket(InetAddress.getLocalHost(), 1234);
+        try {
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
+            objectOutputStream.writeObject(new TestQuery("Does this work?"));
+            Object object = objectInputStream.readObject();
+            if(object instanceof TestResult){
+                System.out.println("Received a Result Query: "+((TestResult) object).test);
             }
-            finally{
-                client.close();
+            else {
+                System.out.println("The Result Object wasn't of the right kind.");
             }
-        }            
-       
-        catch (UnknownHostException e){ 
-            System.out.println("Unknown host"); 
-            System.exit(1); 
-            } 
+            socket.close();
+        }
         catch (IOException e) {
-            System.out.println("No I/O"); 
-            System.exit(1); 
-            } 
+            e.printStackTrace();
+        }
     }
 }
   
