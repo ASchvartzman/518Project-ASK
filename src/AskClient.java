@@ -7,8 +7,8 @@ public class AskClient{
         Socket socket = new Socket(InetAddress.getLocalHost(), 1234);
         try {
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             objectOutputStream.writeObject(new TestQuery("Does this work?"));
+            ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
             Object object = objectInputStream.readObject();
             if(object instanceof TestResult){
                 System.out.println("Received a Test Result: "+((TestResult) object).test);
@@ -16,6 +16,8 @@ public class AskClient{
             else {
                 System.out.println("The Result Object wasn't of the right kind.");
             }
+            objectInputStream.close();
+            objectOutputStream.close();
             socket.close();
         }
         catch (IOException e) {
