@@ -6,14 +6,16 @@ public class AskObject extends Object {
     int objectId;
     int userId;
     String deviceId;
+    double globalRadius;
 
     
-    public AskObject(double xCoord, double yCoord, int objectID, int userID, String deviceID){
+    public AskObject(double xCoord, double yCoord, int objectID, int userID, String deviceID, double global){
         objectId = objectID;
         userId = userID; 
         deviceId = deviceID;
         x = xCoord; 
         y = yCoord; 
+        globalRadius = global;
         
     }
     
@@ -25,5 +27,8 @@ public class AskObject extends Object {
         return y; 
     }
     
+    public double getRadius(){
+        return globalRadius; 
+    }
      
 }
