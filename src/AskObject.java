@@ -1,18 +1,13 @@
+import java.io.Serializable;
 
-public class AskObject extends Object {
-    
-    double x;
-    double y;
-    int objectId;
-    int userId;
-    String deviceId;
-    double globalRadius;
+abstract class AskObject implements Serializable {
 
-    
-    public AskObject(double xCoord, double yCoord, int objectID, int userID, String deviceID, double global){
+    int objectId, userId;
+    double x, y, globalRadius;
+
+    public AskObject(double xCoord, double yCoord, int objectID, int userID, double global){
         objectId = objectID;
-        userId = userID; 
-        deviceId = deviceID;
+        userId = userID;
         x = xCoord; 
         y = yCoord; 
         globalRadius = global;
@@ -27,8 +22,25 @@ public class AskObject extends Object {
         return y; 
     }
     
-    public double getRadius(){
-        return globalRadius; 
+    public double getRadius() { return globalRadius; }
+}
+
+class AskCube extends AskObject {
+
+    double sideLength;
+
+    public AskCube(double side, double xCoord, double yCoord, int objectID, int userID, double globalRadius){
+        super(xCoord, yCoord, objectID, userID, globalRadius);
+        sideLength = side;
     }
-     
+}
+
+class AskSphere extends AskObject{
+    double radius;
+
+    public AskSphere(double rad, double xCoord, double yCoord, int objectID, int userID, double globalRadius){
+        super(xCoord, yCoord, objectID, userID, globalRadius);
+        radius = rad;
+    }
+
 }

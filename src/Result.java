@@ -18,10 +18,21 @@ class TestResult extends Result {
 
 class BoolResult extends Result {
 
+    boolean bool;
+
+    public BoolResult(boolean b) {
+        bool = b;
+    }
 }
 
 class BoolIntResult extends Result {
 
+    boolean bool;
+    int integer;
+
+    public BoolIntResult(boolean b, int i) {
+        bool = b; integer = i;
+    }
 }
 
 class ObjectResult extends Result {
