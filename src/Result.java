@@ -45,4 +45,9 @@ class BoolIntResult extends Result {
 /** In (near) future, ObjectResult will allow the server to return a list of objects to the client. */
 class ObjectResult extends Result {
 
+    AskObject[] askObjects;
+
+    public ObjectResult(AskObject[] _askObjects) {
+        askObjects = _askObjects;
+    }
 }

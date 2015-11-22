@@ -1,7 +1,9 @@
 import java.net.*;
 import java.io.*;
-import java.nio.channels.ServerSocketChannel;
-import java.nio.channels.SocketChannel;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
+
+import net.sf.javaml.core.kdtree.*;
 
 /** AskClient is the server program. */
 public class AskServer extends Thread {
@@ -91,6 +93,23 @@ public class AskServer extends Thread {
         return true;
     }
 
+    AskObject[] FetchObject(FetchQuery fetchQuery){
+        ArrayList<AskObject> askObjectList = new ArrayList<>(0);
+        try {
+            AskPredict askPredict = new AskPredict(fetchQuery);
+            AbstractMap.SimpleEntry<double[], double[]> rectEstimates = askPredict.TotalPredict();
+            Object[] objects = kdTree.range(rectEstimates.getKey(), rectEstimates.getValue());
+            for(Object object: objects) {
+               if(askPredict.Separator(new double[]{ ((AskObject)object).getX(), ((AskObject)object).getY() }))
+                   askObjectList.add((AskObject)object);
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return askObjectList.toArray(new AskObject[askObjectList.size()]);
+    }
+
     /** Handle is the primary function that processes and categorizes all client requests.
      *
      * @param object Expects an instance of an object inheriting Query.
@@ -112,7 +131,7 @@ public class AskServer extends Thread {
         }
         else if(object instanceof FetchQuery){
             System.out.println("Received an Fetch Query.");
-            return new TestResult("Not implemented yet.");
+            return new ObjectResult(FetchObject((FetchQuery)object));
         }
         else {
             // TODO: 11/15/15   In case of a mismatch, I (Karan) recommend that this should throw an exception.

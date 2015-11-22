@@ -1,35 +1,35 @@
 import java.lang.Math;
+import java.util.AbstractMap;
 
+/**
+ * Class that performs predictions based on sensor hints (location, speed).
+ * Prediction is split into translational and rotational updates.
+ * This will return points for the server to query.
+ *
+ * Moreover, we also implement a function that can be used as an oracle to
+ * take out false positives introduced due to the aggressive querying.
+ */
 public class AskPredict {
-    /**
-     * Class that performs predictions based on sensor hints (location, speed). 
-     * Prediction is split into translational and rotational updates. 
-     * This will return points for the server to query. 
-     * 
-     * Moreover, we also implement a function that can be used as an oracle to 
-     * take out false positives introduced due to the aggressive querying. 
-     */
     
-    double[] centerPoint = new double [2]; 
-    double[] speedVec = new double [2]; 
+    double[] centerPoint = new double[2];
+    double[] speedVec = new double[2];
     double viewAngle;
     double viewRadius;
     double compassAngle;
-    AskObject[] currentView = new AskObject[0];
-    
+    double compassChange;
+    double RTT;
      
-    public AskPredict(double[] center,double[] speed, double view, double radius, double compass,AskObject[] current)
-    {
-        centerPoint = center; 
-        viewAngle = view;
-        speedVec = speed;
-        compassAngle = compass;
-        viewRadius = view; 
-        currentView = current;
-        
+    public AskPredict(FetchQuery fetchQuery){
+        centerPoint = fetchQuery.centerPoint;
+        viewAngle = fetchQuery.viewAngle;
+        speedVec = fetchQuery.speedVec;
+        compassAngle = fetchQuery.compassAngle;
+        viewRadius = fetchQuery.viewRadius;
+        compassChange = fetchQuery.compassChange;
+        RTT = fetchQuery.RTT;
     }
     
-    public double[] predictRotation(double compassChange){
+    public double[] PredictRotation(){
        double xCoord = centerPoint[0];
        double yCoord = centerPoint[1];
        double[] queryPoints = new double [4];
@@ -40,11 +40,11 @@ public class AskPredict {
        return queryPoints; 
     }
     
-    public double[] predictTranslation(double[] velocity, double RTT){
+    public double[] PredictTranslation(){
         double xCoord = centerPoint[0];
         double yCoord = centerPoint[1];
-        double xSpeed = velocity[0];
-        double ySpeed = velocity[1]; 
+        double xSpeed = speedVec[0];
+        double ySpeed = speedVec[1];
         double[] queryPoints = new double [4];
         queryPoints[0] = xCoord + RTT*xSpeed-viewRadius*Math.sin(viewAngle/2); 
         queryPoints[1] = yCoord + RTT*ySpeed;
@@ -52,17 +52,15 @@ public class AskPredict {
         queryPoints[3] = yCoord + RTT*ySpeed+viewRadius*Math.cos(viewAngle/2);
         return queryPoints; 
     }
-    
-    public double[] separator(double[] candidatePoints){
-    	double[] confirmedPoints = new double[]; 
-    	for(i=0;i<len(candidatePoints.length();i++){
-    		candidateX = candidatePoints[i][0]; 
-    		candidateY = candidatePoints[i][1]; 
-    		double slope = (candidateY-centerPoint[1])/(candidateX-centerPoint[0]); 
-    		if(abs(slope) > Math.tan(90-viewAngle/2)){
-    			confirmedPoints.add(candidatePoints[i]); 
-    		}
-    	}
-    	return confirmedPoints; 
+
+    public AbstractMap.SimpleEntry<double[], double[]> TotalPredict(){
+        return new AbstractMap.SimpleEntry<>(new double[]{0, 0}, new double[]{0,0});
+    }
+
+    public boolean Separator(double[] candidatePoint){
+        double candidateX = candidatePoint[0];
+        double candidateY = candidatePoint[1];
+        double slope = (candidateY-centerPoint[1])/(candidateX-centerPoint[0]);
+        return (Math.abs(slope) > Math.tan(90-viewAngle/2));
     }
 }
