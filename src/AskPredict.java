@@ -60,7 +60,7 @@ public class AskPredict {
         double yCoord = centerPoint[1]+RTT*speedVec[1];
         double cAngle=compassAngle+RTT*speedVec[2];
         double x=viewRadius;
-        double y=2*viewRadius*Math.tan(viewAngle/2)
+        double y=2*viewRadius*Math.tan(viewAngle/2);
         double[] queryPoints = new double [4];
         // works for angles less than 90 I think 
         queryPoints[0] = xCoord - x*Math.sin(cAngle)-y*Math.cos(cAngle)/2;
