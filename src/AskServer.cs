@@ -54,7 +54,7 @@ public class AskServer : Thread {
 		}
 	}
 	
-	Boolean DeleteObject(DeleteQuery deleteQuery){
+	bool DeleteObject(DeleteQuery deleteQuery){
 		/** Checks if the received queryId is in idMap. */
 		// TODO: 11/15/15  (Karan) It might be alright to say 'true'.
 		if(!idMap.ContainsKey(deleteQuery.queryId))
@@ -104,7 +104,7 @@ public class AskServer : Thread {
 		}
 		else if(queryObject is InsertQuery){
 			Console.WriteLine("Received an Insert Query.");
-			Dictionary<Boolean, Integer> result = InsertObject((InsertQuery) queryObject);
+			Dictionary<bool, int> result = InsertObject((InsertQuery) queryObject);
 			return new BoolIntResult(result.getKey(), result.getValue());
 		}
 		else if(queryObject is DeleteQuery){
@@ -142,8 +142,8 @@ public class AskServer : Thread {
 	
 	public static void main(String [] args){
 		engaged = new Boolean(false);
-		kdTree = new KDtree(2);
-		idMap = new HashMap<int, Object>();
+		kdTree = new KdTree(2);
+		idMap = new HashMap<int, object>();
 		maxObjectId = 0;
 		try {
 			TcpListener serverSocket = new TcpListener(1234);

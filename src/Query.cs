@@ -3,8 +3,7 @@ using System.Runtime.Serialization;
 /** Query is an abstract class (with support for serialization).
  * All queries initiated from the client to the server must instantiate a class inheriting Query. */
 [Serializable]
-
-abstract class Query {
+public class Query {
 	int queryId;
 }
 
@@ -39,7 +38,7 @@ class DeleteQuery: Query {
 }
 
 /** In (near) future, FetchQuery will allow for specification of sensor data to pre-fetch objects. */
-class FetchQuery: Query {
+class public FetchQuery: Query {
 	double[] centerPoint = new double [2];
 	double[] speedVec = new double [3];
 	// speed is v_x, v_y, v_{theta}
