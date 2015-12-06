@@ -35,7 +35,7 @@ public class AskObject: Object
 		return position[1]; 
 	}
 
-	
+
 	
 	/** Returns the globalRadius. */
 	// public double getRadius() {

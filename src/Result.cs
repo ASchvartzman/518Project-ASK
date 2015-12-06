@@ -26,8 +26,9 @@ class TestResult: Result {
 	/** String test -- Test message to be transmitted to the client. */
 	String test;
 	
-	public TestResult(String inputString){
+	public TestResult(String inputString, int qId){
 		test = inputString;
+		queryId=qId;
 	}
 }
 
@@ -36,8 +37,9 @@ class TestResult: Result {
 class BoolResult: Result {
 
 	bool boolVal;	
-	public BoolResult(bool b) {
+	public BoolResult(bool b, int qId) {
 		boolVal = b;
+		queryId=qId;
 	}
 }
 
@@ -48,9 +50,10 @@ class BoolIntResult: Result {
 	bool boolVal;
 	int integer;
 
-	public BoolIntResult(bool b, int i) {
+	public BoolIntResult(bool b, int i, int qId) {
 		boolVal = b;
 		integer = i;
+		queryId=qId;
 	}
 }
 
@@ -59,8 +62,9 @@ class ObjectResult: Result {
 
 	AskObject[] askObjects;
 
-	public ObjectResult(AskObject[] _askObjects) {
+	public ObjectResult(AskObject[] _askObjects, int qId) {
 		askObjects = _askObjects;
+		queryId=qId;
 	}
 }
 

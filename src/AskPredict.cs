@@ -29,8 +29,6 @@ public class AskPredict {
 	double viewRadius;
 	//double compassAngle;
 	double RTT;
-	int[] objectIds;
-	ObjectResult result;
 	
 	public AskPredict(FetchQuery fetchQuery){
 		centerPoint = fetchQuery.centerPoint;
@@ -75,7 +73,7 @@ public class AskPredict {
 		// double cAngle=compassAngle+RTT*speedVec[2];
 		// double x=viewRadius;
 		// double y=2*viewRadius*Math.Tan(viewAngle/2);
-		double[] queryPoints = new double [4];
+		double[] queryPoints = new double [2];
 		// works for angles less than 90 I think 
 		// queryPoints[0] = xCoord - x*Math.Sin(cAngle)-y*Math.Cos(cAngle)/2;
 		// queryPoints[1] = yCoord - y*Math.Sin(cAngle)/2; 
