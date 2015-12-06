@@ -29,13 +29,14 @@ public class AskServer : Thread {
 		idMap=map;
 		KDTree=kd;
 		maxObjectId=0;
-		engaged.Exchange(true);
+		engaged.Exchange(false);
 	}
 // What all do we need to check here
 	Dictionary<Boolean, Integer> InsertObject(InsertQuery insertQuery){
 		// double x = insertQuery.askObject.getX(); 
 		// double y = insertQuery.askObject.getY(); 
-		double coord=askObject.position;
+		AskObject obj=insertQuery.askObject;
+		double coord=obj.position;
 		//double radius = insertQuery.askObject.getRadius(); 
 	
 
@@ -55,9 +56,14 @@ public class AskServer : Thread {
 				{
 					return new Dictionary<bool, int>(false, -1);
 				}
-				insertQuery.askObject.objectId = maxObjectId;
-				KDtree.add(askObject.position, maxObjectId);
-				idMap.Add(maxObjectId++, insertQuery.askObkject);
+				
+				obj.objectId = maxObjectId+1;
+				bool ifadd=KDtree.Add(obj.position, obj.objectId);
+				if(!ifadd){
+					return new Dictionary<bool, int>(false, -3);
+				}
+				idMap.Add(obj.objectId, obj);
+				maxObjectId++;
 
 			}
 			catch (Exception e){
