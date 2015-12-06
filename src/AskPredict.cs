@@ -10,7 +10,7 @@
 
 using System;
 using System.Collections.Generic;
-
+// x y vx vy \theta dtheta list of objectIDs that you already have
 /**
  * Class that performs predictions based on sensor hints (location, speed).
  * Prediction is split into translational and rotational updates.
@@ -19,23 +19,26 @@ using System.Collections.Generic;
  * Moreover, we also implement a function that can be used as an oracle to
  * take out false positives introduced due to the aggressive querying.
  */
+//Strategy here is to send the mappings in a fixed radius whose center is predicted using vx, vy
 
 public class AskPredict {
 	
 	double[] centerPoint = new double[2];
 	double[] speedVec = new double[3];
-	double viewAngle;
+	//double viewAngle;
 	double viewRadius;
-	double compassAngle;
+	//double compassAngle;
 	double RTT;
 	
 	public AskPredict(FetchQuery fetchQuery){
 		centerPoint = fetchQuery.centerPoint;
-		viewAngle = fetchQuery.viewAngle;
+		//viewAngle = fetchQuery.viewAngle;
 		speedVec = fetchQuery.speedVec;
-		compassAngle = fetchQuery.compassAngle;
+		//compassAngle = fetchQuery.compassAngle;
 		viewRadius = fetchQuery.viewRadius;
 		RTT = fetchQuery.RTT;
+		objectIds=fetchQuery.objectIds;
+		result.queryId=fetchQuery.queryId;
 	}
 	
 	public double[] PredictRotation(){
@@ -67,15 +70,17 @@ public class AskPredict {
 	public double[] PredictTotal(){
 		double xCoord = centerPoint[0]+RTT*speedVec[0];
 		double yCoord = centerPoint[1]+RTT*speedVec[1];
-		double cAngle=compassAngle+RTT*speedVec[2];
-		double x=viewRadius;
-		double y=2*viewRadius*Math.Tan(viewAngle/2);
-		double[] queryPoints = new double [4];
+		// double cAngle=compassAngle+RTT*speedVec[2];
+		// double x=viewRadius;
+		// double y=2*viewRadius*Math.Tan(viewAngle/2);
+		double[] queryPoints = new double [2];
 		// works for angles less than 90 I think 
-		queryPoints[0] = xCoord - x*Math.Sin(cAngle)-y*Math.Cos(cAngle)/2;
-		queryPoints[1] = yCoord - y*Math.Sin(cAngle)/2; 
-		queryPoints[2] = xCoord +y*Math.Cos(cAngle)/2; 
-		queryPoints[3] = yCoord +x*Math.Cos(cAngle)+y*Math.Sin(cAngle)/2;
+		// queryPoints[0] = xCoord - x*Math.Sin(cAngle)-y*Math.Cos(cAngle)/2;
+		// queryPoints[1] = yCoord - y*Math.Sin(cAngle)/2; 
+		// queryPoints[2] = xCoord +y*Math.Cos(cAngle)/2; 
+		// queryPoints[3] = yCoord +x*Math.Cos(cAngle)+y*Math.Sin(cAngle)/2;
+		queryPoints[0]=xCoord;
+		queryPoints[1]=yCoord;
 		return queryPoints; 
 		
 	}

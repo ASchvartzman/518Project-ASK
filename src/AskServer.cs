@@ -4,43 +4,66 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Text;
 using System.Collections.Generic;
+using System.Collections.ArrayList;
 
 public class AskServer : Thread {
 
     // Incoming data from the client.
 	Socket socket;
-    public static string data = null;
+    //public static string data = null;
 	double maxRadius = 1.0; 
-	public static Dictionary<int, Object> idMap;
+	//public static Dictionary<int, Object> idMap;
+	public static Dictionary<int, AskObject> idMap;
 	public static int maxObjectId;
 	public static Interlocked engaged;
+	//  check where to define
+	public static KdTree<int,int> KDTree;
 
 
 	//Class constructor 
 	public AskServer(Socket inputSocket){
 		Socket socket = inputSocket; 
 	}
-
+	// public AskServer(KdTree<int,int> kd,Dictionary<int, AskObject> map)
+	// {
+	// 	idMap=map;
+	// 	KDTree=kd;
+	// 	maxObjectId=0;
+	// 	engaged.Exchange(false);
+	// }
+// What all do we need to check here
 	Dictionary<Boolean, Integer> InsertObject(InsertQuery insertQuery){
-		double x = insertQuery.askObject.getX(); 
-		double y = insertQuery.askObject.getY(); 
-		double radius = insertQuery.askObject.getRadius(); 
-		double conservativeRadius = radius + maxRadius;
+		// double x = insertQuery.askObject.getX(); 
+		// double y = insertQuery.askObject.getY(); 
+		AskObject obj=insertQuery.askObject;
+		double coord=obj.position;
+		//double radius = insertQuery.askObject.getRadius(); 
+	
 
 		while(!engaged.CompareExchange(false, true)){
 			try {
-				Object[] neighbors = KDtree.RadialSearch(new double[]{x,y}, conservativeRadius, 100);
-				for(int i = 0; i < neighbors.length; i++){
-					AskObject neighbor = (AskObject) neighbors[i];
-					/** If there exists a point which might overlap (determined from globalRadius), reject. */
-					double distance = Math.Sqrt( Math.Pow(x-neighbor.getX(), 2) + Math.Pow(y-neighbor.getY(), 2) );
-					if(distance < neighbor.getRadius() + radius)
-						return new Dictionary<bool, int>(false, -1);
-				}
+				KdTreeNode<int, int>[] neighbors = KDtree.RadialSearch(coord, 2*maxRadius, 100);
+				// for(int i = 0; i < neighbors.length; i++){
+				// 	//AskObject neighbor = (AskObject) neighbors[i];
+				// 	askObject neighbor=idMap[neighbors[i].Value];
+				// 	/** If there exists a point which might overlap (determined from globalRadius), reject. */
+				// 	double distance = Math.Sqrt( Math.Pow(x-neighbor.getX(), 2) + Math.Pow(y-neighbor.getY(), 2) );
+				// 	// if(distance < neighbor.getRadius() + radius)
+				// 	// 	return new Dictionary<bool, int>(false, -1);
+				// }
 				/** Otherwise, insert. */
-				insertQuery.askObject.objectId = maxObjectId;
-				KDtree.add(new double[]{x, y}, insertQuery.askObject);
-				idMap.Add(maxObjectId++, insertQuery.askObkject);
+				if (neighbors.length>1)
+				{
+					return new Dictionary<bool, int>(false, -1);
+				}
+				
+				obj.objectId = maxObjectId+1;
+				bool ifadd=KDtree.Add(obj.position, obj.objectId);
+				if(!ifadd){
+					return new Dictionary<bool, int>(false, -3);
+				}
+				idMap.Add(obj.objectId, obj);
+				maxObjectId++;
 
 			}
 			catch (Exception e){
@@ -57,16 +80,16 @@ public class AskServer : Thread {
 	bool DeleteObject(DeleteQuery deleteQuery){
 		/** Checks if the received queryId is in idMap. */
 		// TODO: 11/15/15  (Karan) It might be alright to say 'true'.
-		if(!idMap.ContainsKey(deleteQuery.queryId))
+		if(!idMap.ContainsKey(deleteQuery.objectId))
 			return false;
 		
-		AskObject askObject = idMap[deleteQuery.queryID];
+		AskObject askObject = idMap[deleteQuery.objectId];
 		try{
 			/** If the object is there, delete it. */
-			if (KDtree.FindValueAt(new double[]{askObject.getX(), askObject.getY()}) == false)
+			if (KDtree.TryFindValueAt(askObject.position,askObject.objectId) == false)
 				return false;
-			KDtree.RemoveAt(new double[]{askObject.getX(), askObject.getY()});
-			idMap.Remove(deleteQuery.queryId);
+			KDtree.RemoveAt(askObject.position);
+			idMap.Remove(deleteQuery.objectId);
 		}
 		catch (Exception e){
 			e.StackTrace();
@@ -76,21 +99,35 @@ public class AskServer : Thread {
 	}
 
 	AskObject[] FetchObject(FetchQuery fetchQuery){
-		ArrayList<AskObject> askObjectList = new ArrayList();
+		AskPredict predict=new AskPredict(fetchQuery);
+		double[] centerPoint=predict.PredictTotal();
+		double viewRadius=fetchQuery.viewRadius;
+		int[] objectIds=fetchQuery.objectIds;
+		ArrayList askobjects=new ArrayList();
 		try {
-			AskPredict askPredict = new AskPredict(fetchQuery);
-			Dictionary<double[], double[]> rectEstimates = askPredict.TotalPredict();
-			Object[] objects = KDtree.RadialSearch(rectEstimates.getKey(), rectEstimates.getValue(), 100);
-			foreach(Object listObj in objects) {
-				if(askPredict.Separator(new double[]{ ((AskObject)listObj).getX(), ((AskObject)listObj).getY() }))
-					askObjectList.add((AskObject)listObj);
+			KdTreeNode<int, int>[] objects = KDtree.RadialSearch(centerPoint, viewRadius, 100);
+			for (int i=0;i<objects.length;i++)
+			{
+				int objId=objects[i].Value;
+				if(objectIds.IndexOf(objId)==-1)
+				{
+					askobjects.Add(idMap(objId));
+				}
 			}
 		}
 		catch (Exception e) {
 			e.StackTrace();
 		}
-		return askObjectList.toArray(new AskObject[askObjectList.size()]);
+		int count=askobjects.Count;
+		AskObject[] result=new AskObject[count];
+		for (int i=0;i<count;i++)
+		{
+			result[i]=(AskObject) askobjects[i];
+		}
+		
+		return result;
 	}
+
 
 	/** Handle is the primary function that processes and categorizes all client requests.
      *
@@ -100,20 +137,20 @@ public class AskServer : Thread {
 	Object Handle(Object queryObject){
 		if(queryObject is TestQuery){
 			Console.WriteLine("Received a Test Query: "+((TestQuery) queryObject).test);
-			return new TestResult("Indeed!");
+			return new TestResult("Indeed!",TestQuery.queryId);
 		}
 		else if(queryObject is InsertQuery){
 			Console.WriteLine("Received an Insert Query.");
 			Dictionary<bool, int> result = InsertObject((InsertQuery) queryObject);
-			return new BoolIntResult(result.getKey(), result.getValue());
+			return new BoolIntResult(result.getKey(), result.getValue(), InsertQuery.queryId);
 		}
 		else if(queryObject is DeleteQuery){
 			Console.WriteLine("Received an Delete Query.");
-			return new BoolResult(DeleteObject((DeleteQuery) queryObject));
+			return new BoolResult(DeleteObject((DeleteQuery) queryObject), DeleteQuery.queryId);
 		}
 		else if(queryObject is FetchQuery){
 			Console.WriteLine("Received an Fetch Query.");
-			return new ObjectResult(FetchObject((FetchQuery)queryObject));
+			return new ObjectResult(FetchObject((FetchQuery)queryObject),FetchQuery.queryId);
 		}
 		else {
 			// TODO: 11/15/15   In case of a mismatch, I (Karan) recommend that this should throw an exception.
@@ -142,9 +179,11 @@ public class AskServer : Thread {
 	
 	public static void main(String [] args){
 		engaged = new Boolean(false);
-		kdTree = new KdTree(2);
-		idMap = new HashMap<int, object>();
+		KDTree = new KdTree<int,int>(2);
+		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
+		//AskServer askServer = new AskServer(kdTree,idMap);
+
 		try {
 			TcpListener serverSocket = new TcpListener(1234);
 			/** Waits to receive a client call. As soon as it gets one, forks a new instance to handle the same. */

@@ -42,22 +42,35 @@ class public FetchQuery: Query {
 	double[] centerPoint = new double [2];
 	double[] speedVec = new double [3];
 	// speed is v_x, v_y, v_{theta}
-	double viewAngle;
+	//double viewAngle;
 	double viewRadius;
-	double compassAngle;
+	//double compassAngle;
 	
 	double RTT;
 	int[] objectIds;
 	
-	public FetchQuery(double[] _centerPoint, double[] _speedVec, double _viewAngle, double _viewRadius, double _compassAngle,  double _RTT, int[] _objectIds) {
+	// public FetchQuery(double[] _centerPoint, double[] _speedVec, double _viewAngle, double _viewRadius, double _compassAngle,  double _RTT, int[] _objectIds) {
+	// 	centerPoint = _centerPoint;
+	// 	speedVec = _speedVec;
+	// 	viewAngle = _viewAngle;
+	// 	viewRadius = _viewRadius;
+	// 	compassAngle = _compassAngle;
+		
+	// 	RTT = _RTT;
+	// 	objectIds = _objectIds;
+	// }
+	public FetchQuery(double[] _centerPoint, double[] _speedVec, double _viewRadius, double _RTT, int[] _objectIds) {
 		centerPoint = _centerPoint;
 		speedVec = _speedVec;
-		viewAngle = _viewAngle;
+		//viewAngle = _viewAngle;
 		viewRadius = _viewRadius;
-		compassAngle = _compassAngle;
+		//compassAngle = _compassAngle;
 		
 		RTT = _RTT;
 		objectIds = _objectIds;
 	}
+
+
+
 }
 
