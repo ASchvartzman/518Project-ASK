@@ -11,31 +11,34 @@ using System.Runtime.Serialization;
 [Serializable]
 public class AskObject: Object 
 {
-	int objectID;
-	int userID;
-	double x, y, globalRadius; 
+	string objectstream;
+	int userId;
+	int targetId;
+	double[] position=new double[2]; 
+	int objectId;
 	
-	public AskObject(double xCoord, double yCoord, int objectID, int userID, double global){
-		objectId = objectID;
+	public AskObject(double Coord, string obj, int userID, int objectID, int targetID){
+		objectstream = obj;
 		userId = userID;
-		x = xCoord; 
-		y = yCoord; 
-		globalRadius = global;
-		
+		position=Coord;
+		objectId=objectID;
+		targetId=targetID;
 	}
 	
 	/** Get the X coordinate of the center. */
 	public double getX(){
-		return x; 
+		return position[0]; 
 	}
 	
 	/** Get the Y coordinate for the center. */
 	public double getY(){
-		return y; 
+		return position[1]; 
 	}
+
+	
 	
 	/** Returns the globalRadius. */
-	public double getRadius() {
-		return globalRadius;
-	}
+	// public double getRadius() {
+	// 	return globalRadius;
+	// }
 }

@@ -14,11 +14,11 @@ using System.Runtime.Serialization;
 /** Result is an abstract class (with support for serialization).
  * All results being returned from the server to the client must instantiate a class inheriting Result. */
 [Serializable]
-abstract class Result {
+public class Result {
 
 	int queryId;
-	int userId;
-	String deviceId;
+	//int userId;
+	//String deviceId;
 }
 
 /** TestResult serves the purpose of debugging. */
