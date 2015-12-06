@@ -24,13 +24,13 @@ public class AskServer : Thread {
 	public AskServer(Socket inputSocket){
 		Socket socket = inputSocket; 
 	}
-	public AskServer(KdTree<int,int> kd,Dictionary<int, AskObject> map)
-	{
-		idMap=map;
-		KDTree=kd;
-		maxObjectId=0;
-		engaged.Exchange(false);
-	}
+	// public AskServer(KdTree<int,int> kd,Dictionary<int, AskObject> map)
+	// {
+	// 	idMap=map;
+	// 	KDTree=kd;
+	// 	maxObjectId=0;
+	// 	engaged.Exchange(false);
+	// }
 // What all do we need to check here
 	Dictionary<Boolean, Integer> InsertObject(InsertQuery insertQuery){
 		// double x = insertQuery.askObject.getX(); 
@@ -179,10 +179,10 @@ public class AskServer : Thread {
 	
 	public static void main(String [] args){
 		engaged = new Boolean(false);
-		kdTree = new KdTree<int,int>(2);
+		KDTree = new KdTree<int,int>(2);
 		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
-		AskServer askServer = new AskServer(kdTree,idMap);
+		//AskServer askServer = new AskServer(kdTree,idMap);
 
 		try {
 			TcpListener serverSocket = new TcpListener(1234);
