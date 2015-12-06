@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System;
 using System.Net;
 using System.Collections;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Net.Sockets;
 using Vuforia;
+using Newtonsoft.Json.Serialization;
 
 class ConcurQueue<T> {
 
@@ -42,7 +43,7 @@ class ASKWorker {
 
 	public void FetchObjects (ConcurQueue<string> queue) {
 		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		socket.Connect (new IPEndPoint(IPAddress.Parse("10.8.163.89"), 11000));
+		socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 		byte[] instream = new byte[100000];
 		int rec = socket.Receive (instream);
 		queue.Enqueue (System.Text.Encoding.ASCII.GetString (instream));
@@ -64,6 +65,8 @@ public class Client : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		byte[] data = GameObject.Find ("ImageTarget/Cube").SaveObjectTree ();
+		data.LoadObjectTree ();
 		while (queue.Count > 0){
 			string str = queue.Dequeue ();
 			if(str.Substring(0,3).Equals("Red"))
