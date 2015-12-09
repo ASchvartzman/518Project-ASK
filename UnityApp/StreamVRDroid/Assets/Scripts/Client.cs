@@ -1,12 +1,17 @@
 using UnityEngine;
 using System;
 using System.Net;
+using System.Text;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using System.Net.Sockets;
 using Vuforia;
 using Newtonsoft.Json.Serialization;
+
+class SomeObject {
+	public int number = 42;
+}
 
 class ConcurQueue<T> {
 
@@ -46,7 +51,9 @@ class ASKWorker {
 		socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 		byte[] instream = new byte[100000];
 		int rec = socket.Receive (instream);
-		queue.Enqueue (System.Text.Encoding.ASCII.GetString (instream));
+		SomeObject so = Newtonsoft.Json.JsonConvert.DeserializeObject<SomeObject> (Encoding.ASCII.GetString(instream));
+		Debug.Log (so.number);
+		//queue.Enqueue (System.Text.Encoding.ASCII.GetString (instream));
 	}
 }
 
