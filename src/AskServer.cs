@@ -5,6 +5,7 @@ using System.Threading;
 using System.Text;
 using System.Collections.Generic;
 using System.Collections.ArrayList;
+import.
 
 public class AskServer : Thread {
 
@@ -162,20 +163,17 @@ public class AskServer : Thread {
 //	/** This is the method that gets invoked on every thread's start().
 //     * Defers the processing to Handle(), and handles the networking components.
 //     */
-//	public void run(){
-//		try{
-//			ObjectOutputStream objectOutputStream = new ObjectOutputStream(socket.getOutputStream());
-//			ObjectInputStream objectInputStream = new ObjectInputStream(socket.getInputStream());
-//			Object inpObject = objectInputStream.readObject();
-//			objectOutputStream.writeObject(Handle(inpObject));
-//			objectInputStream.close();
-//			objectOutputStream.close();
-//			socket.close();
-//		}
-//		catch (Exception e){
-//			e.printStackTrace();
-//		}
-//	}
+	public void run(){
+		try{
+			byte[] instream = new byte[100000];
+			socket.Receive(instream); 
+			socket.Send(JsonConvert.SerializeObject(Handle(JsonConvert.DeseriliazeObject<Query>(instream))));
+			socket.Close();
+		}
+			catch (Exception e){
+			e.printStackTrace();
+		}
+	}
 	
 	public static void main(String [] args){
 		engaged = new Boolean(false);
