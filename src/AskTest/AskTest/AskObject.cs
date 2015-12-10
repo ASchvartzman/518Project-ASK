@@ -8,6 +8,7 @@
 using System;
 using System.Runtime.Serialization;
 
+namespace AskTest{
 [Serializable]
 public class AskObject: Object 
 {
@@ -42,3 +43,4 @@ public class AskObject: Object
 	// 	return globalRadius;
 	// }
 }
+} 

@@ -1,0 +1,13 @@
+﻿<Properties StartupItem="AskTest/AskTest.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="../KdTree.cs">
+    <Files>
+      <File FileName="../KdTree.cs" Line="40" Column="8" />
+      <File FileName="AskTest/packages.config" Line="2" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

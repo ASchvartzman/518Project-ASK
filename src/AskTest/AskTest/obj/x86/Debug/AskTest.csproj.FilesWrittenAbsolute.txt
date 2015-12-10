@@ -1,0 +1,7 @@
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/bin/Debug/AskTest.exe.mdb
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/bin/Debug/AskTest.exe
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/obj/x86/Debug/AskTest.exe
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/obj/x86/Debug/AskTest.exe.mdb
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/bin/Debug/KdTreeLib.dll
+/Users/arielschvartzman/518Project-ASK/src/AskTest/AskTest/bin/Debug/Newtonsoft.Json.dll

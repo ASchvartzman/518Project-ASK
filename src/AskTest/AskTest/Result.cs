@@ -10,7 +10,7 @@
 using System;
 using System.Runtime.Serialization;
 
-
+namespace AskTest{
 /** Result is an abstract class (with support for serialization).
  * All results being returned from the server to the client must instantiate a class inheriting Result. */
 [Serializable]
@@ -67,5 +67,5 @@ class ObjectResult: Result {
 		queryId=qId;
 	}
 }
-
+}
 

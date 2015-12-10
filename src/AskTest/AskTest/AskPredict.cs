@@ -10,6 +10,8 @@
 
 using System;
 using System.Collections.Generic;
+
+namespace AskTest{
 // x y vx vy \theta dtheta list of objectIDs that you already have
 /**
  * Class that performs predictions based on sensor hints (location, speed).
@@ -94,4 +96,6 @@ public class AskPredict {
 		double slope = (candidateY-centerPoint[1])/(candidateX-centerPoint[0]);
 		return (Math.Abs(slope) > Math.Tan(90-viewAngle/2));
 	}
+}
+
 }
