@@ -10,37 +10,30 @@ using System.Runtime.Serialization;
 
 namespace AskTest{
 [Serializable]
-public class AskObject: Object 
-{
-	string objectstream;
-	int userId;
-	int targetId;
-	double[] position=new double[2]; 
-	int objectId;
-	
-	public AskObject(double Coord, string obj, int userID, int objectID, int targetID){
-		objectstream = obj;
-		userId = userID;
-		position=Coord;
-		objectId=objectID;
-		targetId=targetID;
-	}
-	
-	/** Get the X coordinate of the center. */
-	public double getX(){
-		return position[0]; 
-	}
-	
-	/** Get the Y coordinate for the center. */
-	public double getY(){
-		return position[1]; 
-	}
+	public class AskObject 
+	{
+		public string objectstream;
+		public int userId;
+		public int targetId;
+		public float[] position=new float[2]; 
+		public int objectId;
 
+		public AskObject(float[] Coord, string obj, int userID, int objectID, int targetID){
+			objectstream = obj;
+			userId = userID;
+			position=Coord;
+			objectId=objectID;
+			targetId=targetID;
+		}
 
-	
-	/** Returns the globalRadius. */
-	// public double getRadius() {
-	// 	return globalRadius;
-	// }
+		/** Get the X coordinate of the center. */
+		public float getX(){
+			return position[0]; 
+		}
+
+		/** Get the Y coordinate for the center. */
+		public float getY(){
+			return position[1]; 
+		}
+	}
 }
-} 

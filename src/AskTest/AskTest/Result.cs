@@ -13,59 +13,58 @@ using System.Runtime.Serialization;
 namespace AskTest{
 /** Result is an abstract class (with support for serialization).
  * All results being returned from the server to the client must instantiate a class inheriting Result. */
-[Serializable]
-public class Result {
 
-	int queryId;
-	//int userId;
-	//String deviceId;
-}
+	public class Result {
 
-/** TestResult serves the purpose of debugging. */
-class TestResult: Result {
-	/** String test -- Test message to be transmitted to the client. */
-	String test;
-	
-	public TestResult(String inputString, int qId){
-		test = inputString;
-		queryId=qId;
+		public int queryId;
+		//int userId;
+		//String deviceId;
 	}
-}
 
-/** BoolResult allows the server to return a boolean field.
+	/** TestResult serves the purpose of debugging. */
+	class TestResult: Result {
+		/** String test -- Test message to be transmitted to the client. */
+		public String test;
+
+		public TestResult(String inputString, int qId){
+			test = inputString;
+			queryId=qId;
+		}
+	}
+
+	/** BoolResult allows the server to return a boolean field.
  * In the current implementation, this is the one and only valid return message for DeleteQuery. */
-class BoolResult: Result {
+	class BoolResult: Result {
 
-	bool boolVal;	
-	public BoolResult(bool b, int qId) {
-		boolVal = b;
-		queryId=qId;
+		public bool boolVal;	
+		public BoolResult(bool b, int qId) {
+			boolVal = b;
+			queryId=qId;
+		}
 	}
-}
 
-/** BoolintResult allows the server to return a boolean field and an int field.
+	/** BoolintResult allows the server to return a boolean field and an int field.
  * In the current implementation, this is the one and only valid return message for InsertQuery. */
-class BoolIntResult: Result {
+	class BoolIntResult: Result {
 
-	bool boolVal;
-	int integer;
+		public bool boolVal;
+		public int integer;
 
-	public BoolIntResult(bool b, int i, int qId) {
-		boolVal = b;
-		integer = i;
-		queryId=qId;
+		public BoolIntResult(bool b, int i, int qId) {
+			boolVal = b;
+			integer = i;
+			queryId=qId;
+		}
+	}
+
+	/** In (near) future, ObjectResult will allow the server to return a list of objects to the client. */
+	class ObjectResult: Result {
+
+		public AskObject[] askObjects;
+
+		public ObjectResult(AskObject[] _askObjects, int qId) {
+			askObjects = _askObjects;
+			queryId=qId;
+		}
 	}
 }
-
-/** In (near) future, ObjectResult will allow the server to return a list of objects to the client. */
-class ObjectResult: Result {
-
-	AskObject[] askObjects;
-
-	public ObjectResult(AskObject[] _askObjects, int qId) {
-		askObjects = _askObjects;
-		queryId=qId;
-	}
-}
-}
-
