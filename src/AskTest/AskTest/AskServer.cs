@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using KdTree;
+using KdTree.Math;
 using System.Text;
 using System.Collections.Generic;
 using Newtonsoft.Json;
@@ -13,13 +14,13 @@ public class AskServer {
     // Incoming data from the client.
 	Socket socket;
     //public static string data = null;
-	double maxRadius = 1.0; 
+	float maxRadius = 1.0f; 
 	//public static Dictionary<int, Object> idMap;
 	public static Dictionary<int, AskObject> idMap;
 	public static int maxObjectId;
 	public static int engaged=0;
 	//  check where to define
-	public static KdTree<double,int> KDTree;
+	public static KdTree<float,int> KDTree;
 
 
 	//Class constructor 
@@ -35,17 +36,17 @@ public class AskServer {
 	// }
 // What all do we need to check here
 		Tuple<bool, int> InsertObject(InsertQuery insertQuery){
-		// double x = insertQuery.askObject.getX(); 
-		// double y = insertQuery.askObject.getY(); 
+		// float x = insertQuery.askObject.getX(); 
+		// float y = insertQuery.askObject.getY(); 
 		AskObject obj=insertQuery.askObject;
-		double[] coord=obj.position;
-		//double radius = insertQuery.askObject.getRadius(); 
+		float[] coord=obj.position;
+		//float radius = insertQuery.askObject.getRadius(); 
 	
 			//Boolean alwaysfalse = false;
 			while (Interlocked.CompareExchange(ref engaged,1, 0)==1) {
 			}
 			try {
-				KdTreeNode<double, int>[] neighbors = KDTree.RadialSearch(coord, 2*maxRadius, 100);
+				KdTreeNode<float, int>[] neighbors = KDTree.RadialSearch(coord, 2*maxRadius, 100);
 		
 				if (neighbors.Length>1)
 				{
@@ -96,12 +97,12 @@ public class AskServer {
 
 	AskObject[] FetchObject(FetchQuery fetchQuery){
 		AskPredict predict=new AskPredict(fetchQuery);
-		double[] centerPoint=predict.PredictTotal();
-		double viewRadius=fetchQuery.viewRadius;
+		float[] centerPoint=predict.PredictTotal();
+		float viewRadius=fetchQuery.viewRadius;
 		int[] objectIds=fetchQuery.objectIds;
 			List<AskObject> askobjects=new List<AskObject>();
 		try {
-				KdTreeNode<double, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
+				KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
 				for (int i=0;i<objects.Length;i++)
 			{
 				int objId=objects[i].Value;
@@ -178,7 +179,7 @@ public class AskServer {
 	
 	public static void Main(String [] args){
 
-		KDTree = new KdTree<double,int>(2);
+		KDTree = new KdTree<float,int>(2, new FloatMath());
 		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
 		//AskServer askServer = new AskServer(kdTree,idMap);
@@ -240,17 +241,17 @@ class DeleteQuery: Query {
 
 /** In (near) future, FetchQuery will allow for specification of sensor data to pre-fetch objects. */
 public class FetchQuery: Query {
-	public double[] centerPoint = new double [2];
-	public double[] speedVec = new double [3];
+	public float[] centerPoint = new float [2];
+	public float[] speedVec = new float [3];
 	// speed is v_x, v_y, v_{theta}
-	//double viewAngle;
-	public double viewRadius;
-	//double compassAngle;
+	//float viewAngle;
+	public float viewRadius;
+	//float compassAngle;
 
-	public double RTT;
+	public float RTT;
 	public int[] objectIds;
 
-	public FetchQuery(double[] _centerPoint, double[] _speedVec, double _viewRadius, double _RTT, int[] _objectIds) {
+	public FetchQuery(float[] _centerPoint, float[] _speedVec, float _viewRadius, float _RTT, int[] _objectIds) {
 		centerPoint = _centerPoint;
 		speedVec = _speedVec;
 		//viewAngle = _viewAngle;
@@ -321,12 +322,12 @@ class ObjectResult: Result {
 
 public class AskPredict {
 
-	double[] centerPoint = new double[2];
-	double[] speedVec = new double[3];
-	//double viewAngle;
-	double viewRadius;
-	//double compassAngle;
-	double RTT;
+	float[] centerPoint = new float[2];
+	float[] speedVec = new float[3];
+	//float viewAngle;
+	float viewRadius;
+	//float compassAngle;
+	float RTT;
 
 	public AskPredict(FetchQuery fetchQuery){
 		centerPoint = fetchQuery.centerPoint;
@@ -342,13 +343,13 @@ public class AskPredict {
 
 	// Here compassAngle I'm assuming to be the angle of horizontal 
 	// axis with rectangle covering vision
-	public double[] PredictTotal(){
-		double xCoord = centerPoint[0]+RTT*speedVec[0];
-		double yCoord = centerPoint[1]+RTT*speedVec[1];
-		// double cAngle=compassAngle+RTT*speedVec[2];
-		// double x=viewRadius;
-		// double y=2*viewRadius*Math.Tan(viewAngle/2);
-		double[] queryPoints = new double [2];
+	public float[] PredictTotal(){
+		float xCoord = centerPoint[0]+RTT*speedVec[0];
+		float yCoord = centerPoint[1]+RTT*speedVec[1];
+		// float cAngle=compassAngle+RTT*speedVec[2];
+		// float x=viewRadius;
+		// float y=2*viewRadius*Math.Tan(viewAngle/2);
+		float[] queryPoints = new float [2];
 		// works for angles less than 90 I think 
 		// queryPoints[0] = xCoord - x*Math.Sin(cAngle)-y*Math.Cos(cAngle)/2;
 		// queryPoints[1] = yCoord - y*Math.Sin(cAngle)/2; 
@@ -367,10 +368,10 @@ public class AskObject
 	public string objectstream;
 	public int userId;
 	public int targetId;
-	public double[] position=new double[2]; 
+	public float[] position=new float[2]; 
 	public int objectId;
 
-	public AskObject(double[] Coord, string obj, int userID, int objectID, int targetID){
+	public AskObject(float[] Coord, string obj, int userID, int objectID, int targetID){
 		objectstream = obj;
 		userId = userID;
 		position=Coord;
@@ -379,19 +380,19 @@ public class AskObject
 	}
 
 	/** Get the X coordinate of the center. */
-	public double getX(){
+	public float getX(){
 		return position[0]; 
 	}
 
 	/** Get the Y coordinate for the center. */
-	public double getY(){
+	public float getY(){
 		return position[1]; 
 	}
 
 
 
 	/** Returns the globalRadius. */
-	// public double getRadius() {
+	// public float getRadius() {
 	// 	return globalRadius;
 	// }
 }
