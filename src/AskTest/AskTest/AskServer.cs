@@ -18,8 +18,6 @@ public class AskServer {
 	public static int engaged=0;
 	public static KdTree<float,int> KDTree;
 
-
-	//Class constructor 
 	public AskServer(Socket inputSocket){
 	}
 	Tuple<bool, int> InsertObject(InsertQuery insertQuery){
@@ -108,13 +106,7 @@ public class AskServer {
 		
 		return result;
 	}
-
-
-	/** Handle is the primary function that processes and categorizes all client requests.
-     *
-     * @param object Expects an instance of an object inheriting Query.
-     * @return An object inheriting Result.
-     */
+			
 	Object Handle(Object queryObject){
 		if(queryObject is TestQuery){
 			Console.WriteLine("Received a Test Query: "+((TestQuery) queryObject).test);
@@ -140,9 +132,6 @@ public class AskServer {
 		}
 	}
 	
-//	/** This is the method that gets invoked on every thread's start().
-//     * Defers the processing to Handle(), and handles the networking components.
-//     */
 	public void run(){
 		try{
 			byte[] instream = new byte[100000];
@@ -150,8 +139,8 @@ public class AskServer {
 				socket.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(Handle(JsonConvert.DeserializeObject<Query>(Encoding.ASCII.GetString(instream))))));
 			socket.Close();
 		}
-			catch (Exception e){
-			//e.printStackTrace();
+		catch (Exception e){
+			Console.WriteLine(e.StackTrace);
 		}
 	}
 	
@@ -161,19 +150,15 @@ public class AskServer {
 		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
 
-		try {
-			TcpListener serverSocket = new TcpListener(1234);
-			/** Waits to receive a client call. As soon as it gets one, forks a new instance to handle the same. */
-			while(true){
-				/** The accept() here is blocking. */
-				Socket socket = serverSocket.AcceptSocket();
-				AskServer askServer = new AskServer(socket);
-				/** Start the thread. */
-					Thread mythread=new Thread(askServer.run);
-					mythread.Start();
-			}
-		}
-		catch (Exception e){
+		Socket listener = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		listener.Bind(new IPEndPoint(IPAddress.Any, 1234));
+		listener.Listen(100);
+
+		while (true) {
+			Socket handler = listener.Accept ();
+			AskServer askServer = new AskServer (handler);
+			Thread mythread = new Thread (askServer.run);
+			mythread.Start ();
 		}
 	}
 }
