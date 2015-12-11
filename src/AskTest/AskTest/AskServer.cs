@@ -77,7 +77,7 @@ public class AskServer {
 		float[] centerPoint=predict.PredictTotal();
 		float viewRadius=fetchQuery.viewRadius;
 		int[] objectIds=fetchQuery.objectIds;
-			List<AskObject> askobjects=new List<AskObject>();
+		List<AskObject> askobjects=new List<AskObject>();
 		try {
 				KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
 				for (int i=0;i<objects.Length;i++)
@@ -96,15 +96,9 @@ public class AskServer {
 			}
 		}
 		catch (Exception e) {
+			Console.WriteLine (e.StackTrace);
 		}
-		int count=askobjects.Count;
-		AskObject[] result=new AskObject[count];
-		for (int i=0;i<count;i++)
-		{
-			result[i]=askobjects[i];
-		}
-		
-		return result;
+		return  askobjects.ToArray();
 	}
 			
 	Object Handle(Object queryObject){
@@ -136,7 +130,7 @@ public class AskServer {
 		try{
 			byte[] instream = new byte[100000];
 			socket.Receive(instream); 
-				socket.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(Handle(JsonConvert.DeserializeObject<Query>(Encoding.ASCII.GetString(instream))))));
+			socket.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(Handle(JsonConvert.DeserializeObject<Query>(Encoding.ASCII.GetString(instream))))));
 			socket.Close();
 		}
 		catch (Exception e){

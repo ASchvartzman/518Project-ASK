@@ -1,0 +1,6 @@
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/bin/Debug/ASKServer.exe.mdb
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/bin/Debug/ASKServer.exe
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/obj/x86/Debug/ASKServer.exe
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/obj/x86/Debug/ASKServer.exe.mdb
+/Users/karan/GitHub/518Project-ASK.git/ASKServer/ASKServer/bin/Debug/Newtonsoft.Json.dll
