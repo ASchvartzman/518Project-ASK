@@ -1,9 +1,12 @@
 ﻿<Properties StartupItem="AskTest/AskTest.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="../KdTree.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="AskTest/AskServer.cs">
     <Files>
-      <File FileName="../KdTree.cs" Line="40" Column="8" />
-      <File FileName="AskTest/packages.config" Line="2" Column="11" />
+      <File FileName="AskTest/AskServer.cs" Line="169" Column="39" />
+      <File FileName="AskTest/Query.cs" Line="78" Column="1" />
+      <File FileName="AskTest/Result.cs" Line="17" Column="1" />
+      <File FileName="AskTest/AskPredict.cs" Line="26" Column="1" />
+      <File FileName="AskTest/AskObject.cs" Line="13" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
