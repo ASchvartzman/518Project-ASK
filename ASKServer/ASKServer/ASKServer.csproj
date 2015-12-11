@@ -38,6 +38,15 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\..\src\AskTest\AskTest\Query.cs">
+      <Link>Query.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\AskTest\AskTest\Result.cs">
+      <Link>Result.cs</Link>
+    </Compile>
+    <Compile Include="..\..\src\AskTest\AskTest\AskObject.cs">
+      <Link>AskObject.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
