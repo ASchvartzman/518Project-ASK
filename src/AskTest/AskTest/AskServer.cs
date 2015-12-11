@@ -19,17 +19,18 @@ public class AskServer {
 	public static KdTree<float,int> KDTree;
 
 	public AskServer(Socket inputSocket){
+		socket = inputSocket;
 	}
 	Tuple<bool, int> InsertObject(InsertQuery insertQuery){
 	AskObject obj=insertQuery.askObject;
 	float[] coord=obj.position;
 		
-	while (Interlocked.CompareExchange(ref engaged,1, 0)==1) {
+	while (Interlocked.CompareExchange(ref engaged,1, 0)==0) {
 	}
 		try {
 		KdTreeNode<float, int>[] neighbors = KDTree.RadialSearch(coord, 2*maxRadius, 100);
 		
-		if (neighbors.Length>1)
+		if (neighbors.Length>=1)
 			{
 			return new Tuple<bool, int>(false, -1);
 			}
@@ -91,6 +92,7 @@ public class AskServer {
 					}
 				if(!present)
 				{
+					//Console.WriteLine(objId.ToString());
 					askobjects.Add(idMap[objId]);
 				}
 			}
@@ -101,23 +103,29 @@ public class AskServer {
 		return  askobjects.ToArray();
 	}
 			
-	Object Handle(Object queryObject){
-		if(queryObject is TestQuery){
-			Console.WriteLine("Received a Test Query: "+((TestQuery) queryObject).test);
-				return new TestResult("Indeed!",((TestQuery) queryObject).queryId);
+		Object Handle(Tuple<string, string> queryObject){
+			if(queryObject.Item1.Equals("TestQuery")){
+			TestQuery testQ = JsonConvert.DeserializeObject<TestQuery> (queryObject.Item2);
+			Console.WriteLine("Received a Test Query: "+((TestQuery) testQ).test);
+				return new TestResult("Indeed!",((TestQuery) testQ).queryId);
 		}
-		else if(queryObject is InsertQuery){
-			Console.WriteLine("Received an Insert Query.");
-			Tuple<bool, int> result = InsertObject((InsertQuery) queryObject);
-				return new BoolIntResult(result.Item1, result.Item2, ((InsertQuery) queryObject).queryId);
+			else if(queryObject.Item1.Equals("InsertQuery")){
+				Console.WriteLine("Received an Insert Query.");
+				KdTreeNode<float, int>[] neighbors = KDTree.RadialSearch(new float[2] {0.0f, 0.0f}, 1, 100); 
+				Console.WriteLine ("Tree has " + neighbors.Length.ToString() + " Children");  
+				InsertQuery insertQ = JsonConvert.DeserializeObject<InsertQuery> (queryObject.Item2);
+				Tuple<bool, int> result = InsertObject((InsertQuery) insertQ);
+				return new BoolIntResult(result.Item1, result.Item2, ((InsertQuery) insertQ).queryId);
 		}
-		else if(queryObject is DeleteQuery){
-			Console.WriteLine("Received an Delete Query.");
-				return new BoolResult(DeleteObject((DeleteQuery) queryObject),((DeleteQuery) queryObject).queryId);
+			else if(queryObject.Item1.Equals("DeleteQuery")){
+				DeleteQuery deleteQ = JsonConvert.DeserializeObject<DeleteQuery> (queryObject.Item2);
+				Console.WriteLine("Received an Delete Query.");
+				return new BoolResult(DeleteObject((DeleteQuery) deleteQ),((DeleteQuery) deleteQ).queryId);
 		}
-		else if(queryObject is FetchQuery){
-			Console.WriteLine("Received an Fetch Query.");
-				return new ObjectResult(FetchObject((FetchQuery)queryObject),((FetchQuery)queryObject).queryId);
+			else if(queryObject.Item1.Equals("FetchQuery")){
+				FetchQuery fetchQ = JsonConvert.DeserializeObject<FetchQuery> (queryObject.Item2);
+				Console.WriteLine("Received an Fetch Query.");
+				return new ObjectResult(FetchObject((FetchQuery)fetchQ),((FetchQuery)fetchQ).queryId);
 		}
 		else {
 			// TODO: 11/15/15   In case of a mismatch, I (Karan) recommend that this should throw an exception.
@@ -129,18 +137,20 @@ public class AskServer {
 	public void run(){
 		try{
 			byte[] instream = new byte[100000];
-			socket.Receive(instream); 
-			socket.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(Handle(JsonConvert.DeserializeObject<Query>(Encoding.ASCII.GetString(instream))))));
+			int receivedBytes = socket.Receive(instream); 
+			int sentBytes = socket.Send(Encoding.ASCII.GetBytes(JsonConvert.SerializeObject(Handle(JsonConvert.DeserializeObject<Tuple<string, string>>(Encoding.ASCII.GetString(instream))))));
 			socket.Close();
 		}
 		catch (Exception e){
 			Console.WriteLine(e.StackTrace);
+			Console.WriteLine(e.Message);
 		}
 	}
 	
 	public static void Main(String [] args){
 
 		KDTree = new KdTree<float,int>(2, new FloatMath());
+
 		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
 
