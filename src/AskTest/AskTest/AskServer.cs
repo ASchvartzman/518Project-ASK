@@ -158,6 +158,9 @@ public class AskServer {
 	public static void Main(String [] args){
 
 		KDTree = new KdTree<float,int>(2, new FloatMath());
+		KDTree.Add(new float[] {1.0f,1.0f}, 1);
+		KDTree.Add(new float[] {2.0f,2.0f}, 2); 
+
 		idMap = new Dictionary<int, AskObject>();
 		maxObjectId = 0;
 
