@@ -61,8 +61,10 @@ namespace AskTest{
 	class ObjectResult: Result {
 
 		public AskObject[] askObjects;
+		public int length; 
 
-		public ObjectResult(AskObject[] _askObjects, int qId) {
+		public ObjectResult(int l, AskObject[] _askObjects, int qId) {
+			length = l;
 			askObjects = _askObjects;
 			queryId=qId;
 		}

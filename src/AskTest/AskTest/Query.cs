@@ -5,6 +5,16 @@ using System.Runtime.Serialization;
 
 namespace AskTest{
 [Serializable]
+	class Tuple2<T,U> {
+
+		public T Item1;
+		public U Item2;
+		public Tuple2(T i1, U i2){
+			Item1 = i1;
+			Item2 = i2;
+		}
+	}
+
 	public class Query {
 		public int queryId;
 	}

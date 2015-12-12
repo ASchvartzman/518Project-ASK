@@ -12,13 +12,13 @@ namespace AskTest{
 [Serializable]
 	public class AskObject 
 	{
-		public string objectstream;
+		public byte[] objectstream;
 		public int userId;
 		public int targetId;
 		public float[] position=new float[2]; 
 		public int objectId;
 
-		public AskObject(float[] Coord, string obj, int userID, int objectID, int targetID){
+		public AskObject(float[] Coord, byte[] obj, int userID, int objectID, int targetID){
 			objectstream = obj;
 			userId = userID;
 			position=Coord;
