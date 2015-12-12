@@ -3,6 +3,16 @@ using System;
  * All queries initiated from the client to the server must instantiate a class inheriting Query. */
 
 namespace AskTest{
+	class Tuple2<T,U> {
+
+		public T Item1;
+		public U Item2;
+		public Tuple2(T i1, U i2){
+			Item1 = i1;
+			Item2 = i2;
+		}
+	}
+
 	public class Query {
 		public int queryId;
 	}

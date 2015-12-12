@@ -49,10 +49,11 @@ namespace AskTest{
 
 	/** In (near) future, ObjectResult will allow the server to return a list of objects to the client. */
 	class ObjectResult: Result {
-
+		public int length;
 		public AskObject[] askObjects;
 
-		public ObjectResult(AskObject[] _askObjects, int qId) {
+		public ObjectResult(int l, AskObject[] _askObjects, int qId) {
+			length = l;
 			askObjects = _askObjects;
 			queryId=qId;
 		}

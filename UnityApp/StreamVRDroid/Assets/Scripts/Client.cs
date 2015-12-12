@@ -7,11 +7,8 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Net.Sockets;
 using Vuforia;
-using Newtonsoft.Json.Serialization;
-
-class SomeObject {
-	public int number = 42;
-}
+using Newtonsoft.Json;
+using AskTest;
 
 class ConcurQueue<T> {
 
@@ -42,50 +39,57 @@ class ConcurQueue<T> {
 
 class ASKWorker {
 
-	public void Init () {
-
-	}
-
-	public void FetchObjects (ConcurQueue<string> queue) {
+	public void FetchObjects (ConcurQueue<byte[]> queue) {
 		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+		socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
+		FetchQuery fq = new FetchQuery (new float[]{0,0}, new float[]{0,0}, 1000, 1000, new int[0]);
+		Tuple2<string, string> fuqq = new Tuple2<string, string> ("FetchQuery", JsonConvert.SerializeObject(fq));
+		socket.Send (Encoding.ASCII.GetBytes(JsonConvert.SerializeObject (fuqq)));
 		byte[] instream = new byte[100000];
 		int rec = socket.Receive (instream);
-		SomeObject so = Newtonsoft.Json.JsonConvert.DeserializeObject<SomeObject> (Encoding.ASCII.GetString(instream));
-		Debug.Log (so.number);
-		//queue.Enqueue (System.Text.Encoding.ASCII.GetString (instream));
+		string inrec = Encoding.ASCII.GetString (instream);
+		Tuple2<string, string> unfold = JsonConvert.DeserializeObject<Tuple2<string, string> > (inrec);
+		if (!unfold.Item1.Equals ("ObjectResult")) {
+			Debug.Log ("Wrong type of object received.");
+			return;
+		}
+		Debug.Log ("Fuck me.");
+		ObjectResult or = JsonConvert.DeserializeObject<ObjectResult> (unfold.Item2);
+		for (int i = 0; i<or.length; i++) {
+			instream = new byte[100000];
+			socket.Receive(instream);
+			queue.Enqueue(instream);
+		}
+	}
+
+	public void InsertObject(){
+		byte[] data = GameObject.Find ("ImageTarget/Cube").SaveObjectTree ();
+
 	}
 }
 
 public class Client : MonoBehaviour {
-
+	LocationService location = new LocationService ();	
 	ASKWorker askWorker = new ASKWorker ();
 	Thread clientThread;
-	ConcurQueue<string> queue;
+	ConcurQueue<byte[]> queue;
 
 	// Use this for initialization
 	void Start () {
-		queue = new ConcurQueue<string> ();
+		queue = new ConcurQueue<byte[]> ();
 		clientThread = new Thread (() => askWorker.FetchObjects(queue));
 		clientThread.Start ();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		byte[] data = GameObject.Find ("ImageTarget/Cube").SaveObjectTree ();
-		data.LoadObjectTree ();
 		while (queue.Count > 0){
-			string str = queue.Dequeue ();
-			if(str.Substring(0,3).Equals("Red"))
-			   GameObject.Find("ImageTarget/Cube").GetComponent<Renderer>().material.color = Color.red;
-			else if(str.Substring(0,4).Equals("Blue"))
-				GameObject.Find("ImageTarget/Cube").GetComponent<Renderer>().material.color = Color.blue;
-			else
-				GameObject.Find("ImageTarget/Cube").GetComponent<Renderer>().material.color = Color.white;
+			byte[] newobj = queue.Dequeue();
+			newobj.LoadObjectTree();
 		}
 		if (!clientThread.IsAlive) {
-			clientThread = new Thread (() => askWorker.FetchObjects(queue));
-			clientThread.Start ();
+			//clientThread = new Thread (() => askWorker.FetchObjects(queue));
+			//clientThread.Start ();
 		}
 	}
 }
