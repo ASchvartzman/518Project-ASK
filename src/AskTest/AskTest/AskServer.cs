@@ -62,7 +62,32 @@ namespace ASKServer
 		}
 
 		AskObject[] FetchObject (FetchQuery fetchQuery) {
-			return new AskObject[]{ idMap [3] };
+			AskPredict predict = new AskPredict (fetchQuery);
+			float[] centerPoint = predict.PredictTotal ();
+			float viewRadius = fetchQuery.viewRadius;
+			int[] objectIds = fetchQuery.objectIds;
+			List<AskObject> askobjects = new List<AskObject> ();
+				try {
+						KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
+						for (int i=0;i<objects.Length;i++)
+							{
+								int objId=objects[i].Value;
+									bool present=false;
+									for (int j=0;j<objectIds.Length;j++)
+									{
+										if (objectIds[j]==objId)
+											present=true;
+									}
+								if(!present)
+								{
+				 					askobjects.Add(idMap[objId]);
+								}
+							}
+				    	}
+						catch (Exception e) {
+							Console.WriteLine (e.StackTrace);
+						}
+						return  askobjects.ToArray ();
 		}
 
 		bool DeleteObject (DeleteQuery deleteQuery)
@@ -163,49 +188,3 @@ namespace ASKServer
 	}
 
 }
-
-//AskObject[] FetchObject (FetchQuery fetchQuery)
-//{
-//	//			AskPredict predict = new AskPredict (fetchQuery);
-//	//			float[] centerPoint = predict.PredictTotal ();
-//	//			float viewRadius = fetchQuery.viewRadius;
-//	//			int[] objectIds = fetchQuery.objectIds;
-//	foreach (KeyValuePair<int, AskObject> kvp in idMap) {
-//		Console.WriteLine ("Key = {0}, Val = {1} ", kvp.Key, kvp.Value); 
-//	} 	
-//	while (Console.KeyAvailable) {
-//		Console.ReadKey (true); 
-//	}
-//
-//	int objID = 1;//int.Parse (Console.ReadLine ());
-//
-//	List<AskObject> askobjects = new List<AskObject> ();
-//	askobjects.Add (idMap [objID]);
-//	return askobjects.ToArray ();
-//	//		try {
-//	//				int test = int.Parse(Console.ReadLine());
-//	//				Console.WriteLine("The integer is " + test.ToString());
-//	//				askobjects.Add(idMap[test]);
-//	//				KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
-//	//				for (int i=0;i<objects.Length;i++)
-//	//			{
-//	//				int objId=objects[i].Value;
-//	//					bool present=false;
-//	//					for (int j=0;j<objectIds.Length;j++)
-//	//					{
-//	//						if (objectIds[j]==objId)
-//	//							present=true;
-//	//					}
-//	//				if(!present)
-//	//				{
-//	//					//Console.WriteLine(objId.ToString());
-//	//					//askobjects.Add(idMap[objId]);
-//	//				}
-//	//			}
-//	//		}
-//	//		catch (Exception e) {
-//	//			Console.WriteLine (e.StackTrace);
-//	//		}
-//	//		
-//	//			return  askobjects.ToArray ();
-//}
