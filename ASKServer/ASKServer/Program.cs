@@ -4,9 +4,12 @@ using System.Net.Sockets;
 using System.Text;
 using AskTest;
 using Newtonsoft.Json;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ASKServer
 {
+	[System.Serializable]
 	class SomeObject {
 		public int number = 42;
 	}
@@ -14,13 +17,18 @@ namespace ASKServer
 	class Program {
 
 		public static int Main(String[] args) {
-			int[] bc = new int[]{ 2, 3 };
-			int[] cd = bc;
-			bc = new int[]{ 100, 200 };
-			Console.WriteLine (bc [0]);
-			Console.WriteLine (cd [0]);
-			int abcd = int.Parse (Console.ReadLine ());
-			Console.Write (abcd);
+			SomeObject so = new SomeObject();
+			so.number = 12;
+			byte[] instream = new byte[1000000]; 
+			MemoryStream ms = new MemoryStream();
+			BinaryFormatter bf = new BinaryFormatter ();
+			bf.Serialize (ms, so);
+			instream = ms.ToArray ();
+
+			ms = new MemoryStream (instream);
+			object obj = bf.Deserialize (ms);
+			if (obj is SomeObject)
+				Console.WriteLine (((SomeObject)obj).number);
 //			Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 //			socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
 //			socket.Send (Encoding.ASCII.GetBytes (JsonConvert.SerializeObject (new Tuple<string, string>("InsertQuery", JsonConvert.SerializeObject(new  InsertQuery(new AskObject(new float[]{0,0}, "", 0, 0, 0)))))));

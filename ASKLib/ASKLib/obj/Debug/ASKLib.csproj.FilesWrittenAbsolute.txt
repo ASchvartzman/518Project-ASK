@@ -1,0 +1,5 @@
+/Users/karan/GitHub/518Project-ASK.git/ASKLib/ASKLib/obj/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/karan/GitHub/518Project-ASK.git/ASKLib/ASKLib/bin/Debug/ASKLib.dll.mdb
+/Users/karan/GitHub/518Project-ASK.git/ASKLib/ASKLib/bin/Debug/ASKLib.dll
+/Users/karan/GitHub/518Project-ASK.git/ASKLib/ASKLib/obj/Debug/ASKLib.dll
+/Users/karan/GitHub/518Project-ASK.git/ASKLib/ASKLib/obj/Debug/ASKLib.dll.mdb

@@ -11,6 +11,8 @@
 using System;
 using System.Collections.Generic;
 
+using ASKLib;
+
 namespace AskTest{
 // x y vx vy \theta dtheta list of objectIDs that you already have
 /**
@@ -23,7 +25,7 @@ namespace AskTest{
  */
 //Strategy here is to send the mappings in a fixed radius whose center is predicted using vx, vy
 
-	public class AskPredict {
+	class AskPredict {
 
 		float[] centerPoint = new float[2];
 		float[] speedVec = new float[3];

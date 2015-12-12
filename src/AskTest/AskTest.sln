@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AskTest", "AskTest\AskTest.csproj", "{1B753E64-9F83-43A2-9B0E-C1775A72B54A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASKServer", "AskTest\ASKServer.csproj", "{1B753E64-9F83-43A2-9B0E-C1775A72B54A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{48A709D4-F479-4A69-983A-369B6B414E7E}"
 EndProject
