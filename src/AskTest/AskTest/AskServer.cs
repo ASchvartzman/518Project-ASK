@@ -69,7 +69,7 @@ namespace ASKServer
 			int[] objectIds = fetchQuery.objectIds;
 			List<AskObject> askobjects = new List<AskObject> ();
 				try {
-						KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint, viewRadius, 100);
+				KdTreeNode<float, int>[] objects = KDTree.GetNearestNeighbours(centerPoint, 3);
 						for (int i=0;i<objects.Length;i++)
 							{
 								int objId=objects[i].Value;
