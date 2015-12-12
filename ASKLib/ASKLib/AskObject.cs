@@ -10,9 +10,12 @@ namespace ASKLib {
 		public float[] position=new float[2]; 
 		public int objectId;
 
-		public AskObject(float[] Coord, byte[] obj){
+		public AskObject(float[] Coord, int user, int target, byte[] obj, int objID){
 			objectstream = obj;
 			position=Coord;
+			userId = user;
+			targetId = target;
+			objectId = objID;
 		}
 			
 		public float getX(){

@@ -36,8 +36,9 @@ namespace ASKServer
 		
 			lock (engaged) {
 				try {
-					KdTreeNode<float, int>[] neighbors = KDTree.RadialSearch (coord, 2 * maxRadius, 100);
-			
+					KdTreeNode<float, int>[] neighbors = KDTree.GetNearestNeighbours(coord, 3);
+					// 	KdTreeNode<float, int>[] neighbors = KDTree.RadialSearch (coord, 2 * maxRadius, 100);
+
 					if (neighbors.Length >= 1) {
 						return new Tuple<bool, int> (false, -1);
 					}
