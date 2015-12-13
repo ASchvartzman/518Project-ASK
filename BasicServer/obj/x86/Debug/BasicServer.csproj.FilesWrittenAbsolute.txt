@@ -1,0 +1,6 @@
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/bin/Debug/KdTreeLib.dll
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/bin/Debug/BasicServer.exe.mdb
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/bin/Debug/BasicServer.exe
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/obj/x86/Debug/BasicServer.exe
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/obj/x86/Debug/BasicServer.exe.mdb

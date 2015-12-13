@@ -9,9 +9,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 
 using KdTree;
 using KdTree.Math;
-using Basic;
+//using Basic;
 
-using System;
+namespace BasicServer{
 
 	public class ASKServer
 	{
@@ -60,17 +60,17 @@ using System;
 			return new Tuple<bool, int> (true, insertQuery.askObject.objectId);
 		}
 
-		AskObject FetchObject (FetchQuery fetchQuery) {
+		AskObject[] FetchObject (FetchQuery fetchQuery) {
 			float[] centerPoint = fetchQuery.centerPoint;
 			int targetId = fetchQuery.targetId;
-			AskObject result;
+			AskObject[] result=new AskObject[1];
 			try {
 				KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint,4*maxRadius,100);
 				for (int i=0;i<objects.Length;i++)
 				{
-					if(targetId==(idMap[objects[i]]).targetId)
+					if(targetId==(idMap[objects[i].Value]).targetId)
 					{
-						result=objects[i];
+						result[0]=idMap[objects[i].Value];
 						break;
 					}
 				}
@@ -78,7 +78,7 @@ using System;
 			catch (Exception e) {
 				Console.WriteLine (e.StackTrace);
 			}
-			return  result;
+			return result;
 		}
 
 		bool DeleteObject (DeleteQuery deleteQuery)
@@ -125,7 +125,7 @@ using System;
 				FetchQuery fetchQ = (FetchQuery) obj;
 				Console.WriteLine ("Received an Fetch Query.");
 
-				AskObject askObjects = FetchObject (fetchQ);
+				AskObject askObjects = FetchObject(fetchQ)[0];
 				obj2 = new ObjectResult(askObjects, fetchQ.queryId);
 			} else {
 				// TODO: 11/15/15   In case of a mismatch, I (Karan) recommend that this should throw an exception.
@@ -178,3 +178,4 @@ using System;
 		}
 	}
 
+}
