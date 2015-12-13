@@ -110,14 +110,14 @@ public class Client{
 public static void Main(String[] args) {
 	//StartClient();
 			Start();
-			Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+
 	//return 0;
 			double sum=0;
 			Stopwatch sw = new Stopwatch();
 			for (int i = 0; i < 30; i++) {
 				Thread.Sleep (400);
-
+				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				FetchQuery fq = new FetchQuery(new float[]{i*10+0.1f, i*10});
 				fq.queryId = i;
 				BinaryFormatter bf = new BinaryFormatter ();
@@ -138,9 +138,9 @@ public static void Main(String[] args) {
 					TimeSpan time= sw.Elapsed;
 					sum = sum + time.TotalSeconds;
 				}
-				
+				socket.Close();
 			}
-			socket.Close();
+
 			double average = sum / 30;
 			Console.WriteLine ("Average fetching time={0}", average);
 		}
