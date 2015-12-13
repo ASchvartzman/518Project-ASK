@@ -10,8 +10,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 
-
+using BasicLib;
 using System.Runtime.Serialization.Formatters.Binary;
+
 
 namespace Basic{
 
@@ -27,7 +28,7 @@ namespace Basic{
 //		byte[] instream = new byte[100000];
 //
 //		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-//		socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+//		socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
 //
 //		FetchQuery fq = new FetchQuery(new float[]{0, 0});
 //		bf.Serialize (ms, fq);
@@ -81,7 +82,7 @@ public class Client{
 			//string[] str = new string[]{"ImageTarget", "ImageTarget (1)", "ImageTarget (2)"};
 			for(int i = 0; i<numberofobjects; i++){
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+				socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
 				int length = 10000;
 				byte[] obj = new byte[length];
 				Random rnd = new Random ();
@@ -117,7 +118,7 @@ public static void Main(String[] args) {
 			for (int i = 0; i < 30; i++) {
 				Thread.Sleep (400);
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+				socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
 				FetchQuery fq = new FetchQuery(new float[]{i*10+0.1f, i*10});
 				fq.queryId = i;
 				BinaryFormatter bf = new BinaryFormatter ();

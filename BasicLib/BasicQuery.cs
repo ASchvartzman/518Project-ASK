@@ -1,6 +1,6 @@
 using System;
 
-namespace BasicServer {
+namespace BasicLib {
 	[Serializable]
 	public class Query {
 

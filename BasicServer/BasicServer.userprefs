@@ -1,1 +1,15 @@
-﻿<Properties StartupItem="BasicServer.csproj" />
+﻿<Properties StartupItem="BasicServer.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="BasicServer.cs">
+    <Files>
+      <File FileName="BasicServer.cs" Line="128" Column="29" />
+      <File FileName="BasicObject.cs" Line="8" Column="21" />
+      <File FileName="BasicQuery.cs" Line="3" Column="22" />
+      <File FileName="BasicResult.cs" Line="3" Column="22" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

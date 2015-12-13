@@ -34,13 +34,13 @@
     <Reference Include="KdTreeLib">
       <HintPath>packages\KdTree.1.0.2\lib\net45\KdTreeLib.dll</HintPath>
     </Reference>
+    <Reference Include="BasicLib">
+      <HintPath>..\BasicLib\bin\Debug\BasicLib.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BasicServer.cs" />
-    <Compile Include="BasicQuery.cs" />
-    <Compile Include="BasicResult.cs" />
-    <Compile Include="BasicObject.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

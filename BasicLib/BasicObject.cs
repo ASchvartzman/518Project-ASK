@@ -1,6 +1,6 @@
 using System;
 
-namespace Basic {
+namespace BasicLib {
 	[Serializable]
 	public class AskObject 
 	{

@@ -60,17 +60,17 @@ using System;
 			return new Tuple<bool, int> (true, insertQuery.askObject.objectId);
 		}
 
-		AskObject FetchObject2 (FetchQuery2 fetchQuery) {
+		AskObject[] FetchObject2 (FetchQuery2 fetchQuery) {
 			float[] centerPoint = fetchQuery.centerPoint;
 			int targetId = fetchQuery.targetId;
-			AskObject result;
+		AskObject[] result=new AskObject[1];
 			try {
 				KdTreeNode<float, int>[] objects = KDTree.RadialSearch(centerPoint,4*maxRadius,100);
 				for (int i=0;i<objects.Length;i++)
 				{
 					if(targetId==(idMap[objects[i]]).targetId)
 					{
-						result=objects[i];
+						result[0]=objects[i];
 						break;
 					}
 				}
@@ -153,7 +153,7 @@ using System;
 				FetchQuery2 fetchQ = (FetchQuery2) obj;
 				Console.WriteLine ("Received an Fetch Query.");
 
-				AskObject askObjects = FetchObject2 (fetchQ);
+				AskObject askObjects = FetchObject2(fetchQ)[0];
 				obj2 = new ObjectResult2(askObjects, fetchQ.queryId);
 		} else if (obj is FetchQuery) {
 			FetchQuery fetchQ = (FetchQuery) obj;
