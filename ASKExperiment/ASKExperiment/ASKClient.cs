@@ -73,8 +73,14 @@ namespace ASKExperiment{
 //		}
 //	}
 //}
+
+
 public class Client{
-		Dictionary<int,AskObject> idMap;//Ask Karan how to update this in another thread;
+		static Dictionary<int,AskObject> idMap;// targetID-> AskObject
+		static int fetchtime=50;
+		static int deletetime=2000;
+		static int querytime=400;
+		static int stop=0;
 		public static void Start () {
 			BinaryFormatter bf = new BinaryFormatter ();
 			MemoryStream ms = new MemoryStream ();
@@ -88,7 +94,7 @@ public class Client{
 				Random rnd = new Random ();
 				rnd.NextBytes (obj);
 
-				InsertQuery iq = new InsertQuery(new AskObject(new float[]{i*10,i*10},1,i,obj,0));
+				InsertQuery iq = new InsertQuery(new AskObject(new float[]{i*5,i*5},1,i,obj,0));// Change here
 
 				ms = new MemoryStream();
 				bf.Serialize(ms, iq);
@@ -108,40 +114,98 @@ public class Client{
 				socket.Close();
 			}
 		}
-public static void Main(String[] args) {
-	//StartClient();
-			Start();
-			Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-			socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
-	//return 0;
-			double sum=0;
-			Stopwatch sw = new Stopwatch();
-			for (int i = 0; i < 30; i++) {
-				Thread.Sleep (400);
-				
-				FetchQuery fq = new FetchQuery(new float[]{i*10+0.1f, i*10});
-				fq.queryId = i;
+
+		public static void ConstantFetch(){
+			while (stop == 0) {
 				BinaryFormatter bf = new BinaryFormatter ();
 				MemoryStream ms = new MemoryStream ();
-				bf.Serialize (ms, fq);
-				sw.Start();
-				socket.Send (ms.ToArray());
-
 				byte[] instream = new byte[100000];
+	
+				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+				socket.Connect (new IPEndPoint (IPAddress.Parse ("127.0.0.1"), 1234));
+				Random rnd = new Random ();
+				float x = Convert.ToSingle(15*rnd.NextDouble());
+				FetchQuery fq = new FetchQuery (new float[]{ x, x });
+				bf.Serialize (ms, fq);
+				socket.Send (ms.ToArray ());
+	
+				instream = new byte[100000];
 				socket.Receive (instream);
 				ms = new MemoryStream (instream);
 				object obj2 = bf.Deserialize (ms);
-
+	
 				if (obj2 is ObjectResult) {
-					if (obj2 == null)
-						Console.WriteLine ("Null returned");
-					sw.Stop();
-					TimeSpan time= sw.Elapsed;
-					sum = sum + time.TotalSeconds;
+					ObjectResult or = (ObjectResult)obj2;
+					Console.WriteLine (or.askObjects.Length);
+					foreach (AskObject askobject in or.askObjects) {
+						if (idMap.ContainsKey(askobject.targetId)) {
+							idMap[askobject.targetId] = askobject;
+						} else {
+							idMap.Add(askobject.targetId, askobject);
+						}
+					}
+				} else {
+					Console.WriteLine ("Wrong kind of object.");
+				}
+				Thread.Sleep(fetchtime);
+			}
+			
+		}
+		public static void DeleteSomeTargets(){
+			while (stop == 0) {
+				Thread.Sleep(deletetime);
+				idMap.Clear();
+				
+				
+			}
+		}
+public static void Main(String[] args) {
+	//StartClient();
+			Start();
+			Thread mythread=new Thread(ConstantFetch);
+			mythread.Start();
+			Thread DeleteThread = new Thread (DeleteSomeTargets);
+			DeleteThread.Start ();
+
+	//return 0;
+			double sum=0;
+			Stopwatch sw = new Stopwatch();
+			for (int i = 0; i < 20; i++) {// Change here
+				
+				Thread.Sleep(querytime);
+				if (idMap.ContainsKey(i))
+				{
+					sum=sum+0;
+					Console.WriteLine("Doing Good");
+				}
+				else{
+					Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+					socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+					FetchQuery2 fq = new FetchQuery2(new float[]{i*10+0.1f, i*10});
+					fq.queryId = i;
+					BinaryFormatter bf = new BinaryFormatter ();
+					MemoryStream ms = new MemoryStream ();
+					bf.Serialize (ms, fq);
+					sw.Start();
+					socket.Send (ms.ToArray());
+
+					byte[] instream = new byte[100000];
+					socket.Receive (instream);
+					ms = new MemoryStream (instream);
+					object obj2 = bf.Deserialize (ms);
+
+					if (obj2 is ObjectResult2) {
+						if (obj2 == null)
+							Console.WriteLine ("Null returned");
+						sw.Stop();
+						TimeSpan time= sw.Elapsed;
+						sum = sum + time.TotalSeconds;
+					}
+					socket.Close();
 				}
 				
 			}
-			socket.Close();
+			stop = 1;
 			double average = sum / 30;
 			Console.WriteLine ("Average fetching time={0}", average);
 		}

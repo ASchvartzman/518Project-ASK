@@ -61,6 +61,7 @@ namespace ASKExperiment {
 		public float RTT;
 		public int[] objectIds;
 
+			
 		public FetchQuery(float[] _centerPoint){
 			centerPoint = _centerPoint;
 		}
