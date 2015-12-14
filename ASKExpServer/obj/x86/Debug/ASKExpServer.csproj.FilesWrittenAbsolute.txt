@@ -1,0 +1,7 @@
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/bin/Debug/KdTreeLib.dll
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/bin/Debug/ASKExpLib.dll
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/bin/Debug/ASKExpServer.exe.mdb
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/bin/Debug/ASKExpServer.exe
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/obj/x86/Debug/ASKExpServer.exe
+/Users/sumegha/Documents/workspace/518Project-ASK/ASKExpServer/obj/x86/Debug/ASKExpServer.exe.mdb

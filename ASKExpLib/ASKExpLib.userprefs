@@ -1,0 +1,15 @@
+﻿<Properties StartupItem="ASKExpLib.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ASKObject.cs">
+    <Files>
+      <File FileName="ASKObject.cs" Line="3" Column="21" />
+      <File FileName="ASKPredict.cs" Line="3" Column="21" />
+      <File FileName="ASKQuery.cs" Line="3" Column="21" />
+      <File FileName="ASKResult.cs" Line="3" Column="11" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>

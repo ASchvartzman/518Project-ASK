@@ -124,7 +124,7 @@ namespace BasicServer{
 			} else if (obj is FetchQuery) {
 				FetchQuery fetchQ = (FetchQuery) obj;
 				Console.WriteLine ("Received an Fetch Query.");
-
+				Thread.Sleep(500);
 				AskObject askObjects = FetchObject(fetchQ)[0];
 				obj2 = new ObjectResult(askObjects, fetchQ.queryId);
 			} else {

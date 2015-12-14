@@ -10,7 +10,7 @@ using System.Diagnostics;
 using System.Collections.Generic;
 using System.Threading;
 
-
+using ASKExpLib;
 using System.Runtime.Serialization.Formatters.Binary;
 
 namespace ASKExperiment{
@@ -76,10 +76,10 @@ namespace ASKExperiment{
 
 
 public class Client{
-		static Dictionary<int,AskObject> idMap;// targetID-> AskObject
-		static int fetchtime=50;
-		static int deletetime=2000;
-		static int querytime=400;
+		static Dictionary<int,AskObject> idMap=new Dictionary<int, AskObject>();// targetID-> AskObject
+		static int fetchtime=200;
+		static int deletetime=20000;
+		static int querytime=1000;
 		static int stop=0;
 		public static void Start () {
 			BinaryFormatter bf = new BinaryFormatter ();
@@ -126,6 +126,7 @@ public class Client{
 				Random rnd = new Random ();
 				float x = Convert.ToSingle(15*rnd.NextDouble());
 				FetchQuery fq = new FetchQuery (new float[]{ x, x });
+				fq.objectIds=new int[0];
 				bf.Serialize (ms, fq);
 				socket.Send (ms.ToArray ());
 	
@@ -136,7 +137,7 @@ public class Client{
 	
 				if (obj2 is ObjectResult) {
 					ObjectResult or = (ObjectResult)obj2;
-					Console.WriteLine (or.askObjects.Length);
+					//Console.WriteLine (or.askObjects.Length);
 					foreach (AskObject askobject in or.askObjects) {
 						if (idMap.ContainsKey(askobject.targetId)) {
 							idMap[askobject.targetId] = askobject;
@@ -169,7 +170,7 @@ public static void Main(String[] args) {
 
 	//return 0;
 			double sum=0;
-			Stopwatch sw = new Stopwatch();
+
 			for (int i = 0; i < 20; i++) {// Change here
 				
 				Thread.Sleep(querytime);
@@ -186,6 +187,7 @@ public static void Main(String[] args) {
 					BinaryFormatter bf = new BinaryFormatter ();
 					MemoryStream ms = new MemoryStream ();
 					bf.Serialize (ms, fq);
+					Stopwatch sw = new Stopwatch();
 					sw.Start();
 					socket.Send (ms.ToArray());
 
@@ -203,12 +205,15 @@ public static void Main(String[] args) {
 					}
 					socket.Close();
 				}
+				double average = sum / (i + 1);
+				Console.WriteLine ("Average fetching time={0}", average);
 				
 			}
 			stop = 1;
-			double average = sum / 30;
-			Console.WriteLine ("Average fetching time={0}", average);
+			double aver = sum / 20;
+			Console.WriteLine ("Average fetching time={0}", aver);
 		}
 	}
 }
 //Time left
+//.378

@@ -82,13 +82,13 @@ public class Client{
 			//string[] str = new string[]{"ImageTarget", "ImageTarget (1)", "ImageTarget (2)"};
 			for(int i = 0; i<numberofobjects; i++){
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
+				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				int length = 10000;
 				byte[] obj = new byte[length];
 				Random rnd = new Random ();
 				rnd.NextBytes (obj);
 
-				InsertQuery iq = new InsertQuery(new AskObject(new float[]{i*10,i*10},1,i,obj,0));
+				InsertQuery iq = new InsertQuery(new AskObject(new float[]{i*5,i*5},1,i,obj,0));
 
 				ms = new MemoryStream();
 				bf.Serialize(ms, iq);
@@ -114,16 +114,17 @@ public static void Main(String[] args) {
 
 	//return 0;
 			double sum=0;
-			Stopwatch sw = new Stopwatch();
-			for (int i = 0; i < 30; i++) {
+
+			for (int i = 0; i < 20; i++) {
 				Thread.Sleep (400);
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-				socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
-				FetchQuery fq = new FetchQuery(new float[]{i*10+0.1f, i*10});
+				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+				FetchQuery fq = new FetchQuery(new float[]{i*5+0.1f, i*5});
 				fq.queryId = i;
 				BinaryFormatter bf = new BinaryFormatter ();
 				MemoryStream ms = new MemoryStream ();
 				bf.Serialize (ms, fq);
+				Stopwatch sw = new Stopwatch();
 				sw.Start();
 				socket.Send (ms.ToArray());
 
@@ -142,9 +143,12 @@ public static void Main(String[] args) {
 				socket.Close();
 			}
 
-			double average = sum / 30;
+			double average = sum / 20;
 			Console.WriteLine ("Average fetching time={0}", average);
 		}
 	}
 }
 //Time left
+//0.039248815
+//With 500 ms sleep in the server 
+//0.50505281

@@ -10,3 +10,4 @@
 /Users/sumegha/Documents/workspace/518Project-ASK/Basic/Basic/bin/Debug/KdTreeLib.dll
 /Users/sumegha/Documents/workspace/518Project-ASK/Basic/Basic/bin/Debug/Basic.exe.mdb
 /Users/sumegha/Documents/workspace/518Project-ASK/Basic/Basic/bin/Debug/Basic.exe
+/Users/sumegha/Documents/workspace/518Project-ASK/Basic/Basic/bin/Debug/BasicLib.dll

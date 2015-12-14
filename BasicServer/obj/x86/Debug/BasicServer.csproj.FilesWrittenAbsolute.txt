@@ -4,3 +4,4 @@
 /Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/bin/Debug/BasicServer.exe
 /Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/obj/x86/Debug/BasicServer.exe
 /Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/obj/x86/Debug/BasicServer.exe.mdb
+/Users/sumegha/Documents/workspace/518Project-ASK/BasicServer/bin/Debug/BasicLib.dll
