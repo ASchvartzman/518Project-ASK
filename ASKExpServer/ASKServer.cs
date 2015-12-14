@@ -152,7 +152,7 @@ using System;
 			} else if (obj is FetchQuery2) {
 				FetchQuery2 fetchQ = (FetchQuery2) obj;
 				Console.WriteLine ("Received an Fetch Query.");
-			Thread.Sleep (500);
+
 				AskObject askObjects = FetchObject2(fetchQ)[0];
 				obj2 = new ObjectResult2(askObjects, fetchQ.queryId);
 		} else if (obj is FetchQuery) {
@@ -167,6 +167,7 @@ using System;
 				Console.WriteLine ("The Query Object wasn't of the right kind.");
 				obj2 = new TestResult("Don't know what to do?", -1);
 			}
+		Thread.Sleep (0);
 			return obj2;
 		}
 

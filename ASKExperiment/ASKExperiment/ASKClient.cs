@@ -77,9 +77,9 @@ namespace ASKExperiment{
 
 public class Client{
 		static Dictionary<int,AskObject> idMap=new Dictionary<int, AskObject>();// targetID-> AskObject
-		static int fetchtime=200;
-		static int deletetime=20000;
-		static int querytime=1000;
+		static int fetchtime=400;
+		static int deletetime=10000;
+		static int querytime=2000;
 		static int stop=0;
 		public static void Start () {
 			BinaryFormatter bf = new BinaryFormatter ();
@@ -124,7 +124,7 @@ public class Client{
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint (IPAddress.Parse ("127.0.0.1"), 1234));
 				Random rnd = new Random ();
-				float x = Convert.ToSingle(15*rnd.NextDouble());
+				float x = Convert.ToSingle(150*rnd.NextDouble());
 				FetchQuery fq = new FetchQuery (new float[]{ x, x });
 				fq.objectIds=new int[0];
 				bf.Serialize (ms, fq);
@@ -182,7 +182,7 @@ public static void Main(String[] args) {
 				else{
 					Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 					socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
-					FetchQuery2 fq = new FetchQuery2(new float[]{i*10+0.1f, i*10});
+					FetchQuery2 fq = new FetchQuery2(new float[]{i*5+0.1f, i*5});
 					fq.queryId = i;
 					BinaryFormatter bf = new BinaryFormatter ();
 					MemoryStream ms = new MemoryStream ();
@@ -206,7 +206,7 @@ public static void Main(String[] args) {
 					socket.Close();
 				}
 				double average = sum / (i + 1);
-				Console.WriteLine ("Average fetching time={0}", average);
+				//Console.WriteLine ("Average fetching time={0}", average);
 				
 			}
 			stop = 1;
@@ -216,4 +216,9 @@ public static void Main(String[] args) {
 	}
 }
 //Time left
-//.378
+
+// Query time=2000
+// Server latency=0; 0.000861645
+// Server latency=400; 0.28419646
+// Server latency=800; 0.44268451
+// Server latency=1200; =0.84418643

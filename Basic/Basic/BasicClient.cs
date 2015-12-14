@@ -116,7 +116,7 @@ public static void Main(String[] args) {
 			double sum=0;
 
 			for (int i = 0; i < 20; i++) {
-				Thread.Sleep (400);
+				Thread.Sleep (2000);
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				FetchQuery fq = new FetchQuery(new float[]{i*5+0.1f, i*5});
@@ -149,6 +149,7 @@ public static void Main(String[] args) {
 	}
 }
 //Time left
-//0.039248815
-//With 500 ms sleep in the server 
-//0.50505281
+//Latency=0; 0.002903065
+//Latency=400; 0.404652015
+//Latency=800;0.80683223
+//Latency=1200; 1.20568885

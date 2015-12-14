@@ -1,10 +1,13 @@
 ﻿<Properties StartupItem="ASKExperiment.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="ASKClient.cs">
-    <Files>
-      <File FileName="ASKClient.cs" Line="167" Column="55" />
-      <File FileName="ASKQuery.cs" Line="63" Column="3" />
-    </Files>
+  <MonoDevelop.Ide.Workbench>
+    <FloatingWindows>
+      <FloatingWindow WindowId="1" X="394" Y="327" Width="640" Height="480">
+        <Files>
+          <File FileName="ASKClient.cs" Line="221" Column="33" />
+        </Files>
+      </FloatingWindow>
+    </FloatingWindows>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore />

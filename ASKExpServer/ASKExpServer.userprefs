@@ -1,1 +1,12 @@
-﻿<Properties StartupItem="ASKExpServer.csproj" />
+﻿<Properties StartupItem="ASKExpServer.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="ASKServer.cs">
+    <Files>
+      <File FileName="ASKServer.cs" Line="170" Column="18" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
