@@ -133,7 +133,7 @@ namespace ASKServer
 			} else if (obj is FetchQuery) {
 				FetchQuery fetchQ = (FetchQuery) obj;
 				Console.WriteLine ("Received an Fetch Query.");
-
+				Thread.Sleep (1000);
 				AskObject[] askObjects = FetchObject (fetchQ);
 				obj2 = new ObjectResult(askObjects, fetchQ.queryId);
 			} else {

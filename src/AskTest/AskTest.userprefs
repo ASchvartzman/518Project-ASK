@@ -1,9 +1,9 @@
 ﻿<Properties StartupItem="AskTest/ASKServer.csproj">
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.Workbench ActiveDocument="AskTest/AskServer.cs">
     <Files>
-      <File FileName="AskTest/AskServer.cs" Line="12" Column="1" />
-      <File FileName="AskTest/AskPredict.cs" Line="14" Column="12" />
+      <File FileName="AskTest/AskServer.cs" Line="153" Column="1" />
+      <File FileName="AskTest/AskPredict.cs" Line="14" Column="14" />
       <File FileName="AskTest/packages.config" Line="3" Column="66" />
     </Files>
   </MonoDevelop.Ide.Workbench>
