@@ -51,8 +51,9 @@ namespace ASKLib {
 		public float RTT;
 		public int[] objectIds;
 
-		public FetchQuery(float[] _centerPoint){
+		public FetchQuery(float[] _centerPoint, int[] ids){
 			centerPoint = _centerPoint;
+			objectIds = ids;
 		}
 	}
 }

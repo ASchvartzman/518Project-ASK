@@ -13,44 +13,17 @@ using System.IO;
 
 using ASKLib;
 
-class ConcurQueue<T> {
-
-	private Queue<T> queue = new Queue<T> ();
-
-	public int Count {
-		get {
-			return queue.Count;
-		}
-	}
-
-	public void Enqueue (T obj) {
-		lock(queue) {
-			queue.Enqueue(obj);
-			Monitor.PulseAll(queue);
-		}
-	}
-
-	public T Dequeue () {
-		T t;
-		lock (queue) {
-			t = queue.Dequeue ();
-			Monitor.PulseAll(queue);
-		}
-		return t;
-	}
-}
-
 class ASKWorker {
 
-	public void FetchObjects (ConcurQueue<byte[]> queue) {
+	public void FetchObjects (ConcurQueue<int> queue, int[] keys) {
 		BinaryFormatter bf = new BinaryFormatter ();
 		MemoryStream ms = new MemoryStream ();
 		byte[] instream = new byte[100000];
 
 		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-		socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+		socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.169.218"), 1234));
 
-		FetchQuery fq = new FetchQuery(new float[]{0, 0});
+		FetchQuery fq = new FetchQuery(new float[]{0, 0}, keys);
 		bf.Serialize (ms, fq);
 		socket.Send (ms.ToArray());
 
@@ -61,38 +34,41 @@ class ASKWorker {
 
 		if (obj2 is ObjectResult) {
 			ObjectResult or = (ObjectResult) obj2;
-			Debug.Log(or.askObjects.Length);
 			foreach(AskObject askobject in or.askObjects){
-				queue.Enqueue(askobject.objectstream);
+				queue.Enqueue (askobject.objectId);
 			}
 		} else {
 			Debug.Log("Wrong kind of object.");
 		}
 	}
 
-	public void InsertObject(){
+	public int InsertObject(byte[] obj, float[] coord){
+		int answer = -5; 
+		BinaryFormatter bf = new BinaryFormatter ();
+		MemoryStream ms = new MemoryStream ();
+		byte[] instream;
 
-	}
-}
+		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+		socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.169.218"), 1234));
 
-public class Client : MonoBehaviour {
-	LocationService location = new LocationService ();	
-	ASKWorker askWorker = new ASKWorker ();
-	Thread clientThread;
-	ConcurQueue<byte[]> queue;
+		InsertQuery iq = new InsertQuery(new AskObject(coord, 0, 0, obj, 0));
 
-	void Start () {
-		queue = new ConcurQueue<byte[]> ();
-		clientThread = new Thread (() => askWorker.FetchObjects(queue));
-		clientThread.Start ();
-	}
-	
-	void Update () {
-		while (queue.Count > 0){
-			byte[] newobj = queue.Dequeue();
-			newobj.LoadObjectTree();
+		ms = new MemoryStream();
+		bf.Serialize(ms, iq);
+		socket.Send(ms.ToArray());
+
+		instream = new byte[100000];
+		socket.Receive(instream);
+		ms = new MemoryStream (instream);
+		object ans = bf.Deserialize (ms);
+		if (ans is BoolIntResult) {
+			BoolIntResult ans2 = (BoolIntResult)ans;
+			if (ans2.boolVal == true)
+				answer = ans2.integer;
+		} else {
+			Debug.Log ("Wrong confirmation packet.");
 		}
-		if (!clientThread.IsAlive) {
-		}
+		socket.Close();
+		return answer;
 	}
 }
