@@ -17,78 +17,31 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace Basic{
 
 
-
-
-
-//class ASKWorker {
-//
-//	public void FetchObjects (ConcurQueue<byte[]> queue) {
-//		BinaryFormatter bf = new BinaryFormatter ();
-//		MemoryStream ms = new MemoryStream ();
-//		byte[] instream = new byte[100000];
-//
-//		Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-//		socket.Connect (new IPEndPoint(IPAddress.Parse("10.9.101.248"), 1234));
-//
-//		FetchQuery fq = new FetchQuery(new float[]{0, 0});
-//		bf.Serialize (ms, fq);
-//		socket.Send (ms.ToArray());
-//
-//		instream = new byte[100000];
-//		socket.Receive (instream);
-//		ms = new MemoryStream (instream);
-//		object obj2 = bf.Deserialize (ms);
-//
-//		if (obj2 is ObjectResult) {
-//			ObjectResult or = (ObjectResult) obj2;
-//			Debug.Log(or.askObjects.Length);
-//			foreach(AskObject askobject in or.askObjects){
-//				queue.Enqueue(askobject.objectstream);
-//			}
-//		} else {
-//			Debug.Log("Wrong kind of object.");
-//		}
-//	}
-//
-//	
-//	}
-
-//public class Client  {
-//	LocationService location = new LocationService ();	
-//	ASKWorker askWorker = new ASKWorker ();
-//	Thread clientThread;
-//	ConcurQueue<byte[]> queue;
-//
-//	void Start () {
-//		queue = new ConcurQueue<byte[]> ();
-//		clientThread = new Thread (() => askWorker.FetchObjects(queue));
-//		clientThread.Start ();
-//	}
-//
-//	void Update () {
-//		while (queue.Count > 0){
-//			byte[] newobj = queue.Dequeue();
-//			newobj.LoadObjectTree();
-//		}
-//		if (!clientThread.IsAlive) {
-//		}
-//	}
-//}
 public class Client{
+		static int numberofobjects = 100;
+		static bool move=true;
+		static float[] objectX=new float[numberofobjects];
+		static float[] objectY=new float[numberofobjects];
+		static float[] currentLoc=new float[]{0f,0f};
+		static float[] velocity=new float[]{0.005f,0f}; // 0.01 units/ms
+
 		public static void Start () {
 			BinaryFormatter bf = new BinaryFormatter ();
 			MemoryStream ms = new MemoryStream ();
-			int numberofobjects = 30;
+
+			// In a 1000 X 1000 room 
 			//string[] str = new string[]{"ImageTarget", "ImageTarget (1)", "ImageTarget (2)"};
 			for(int i = 0; i<numberofobjects; i++){
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
-				int length = 10000;
+				Random rndweight=new Random();
+				int length = rndweight.Next(100,2000);
 				byte[] obj = new byte[length];
 				Random rnd = new Random ();
 				rnd.NextBytes (obj);
-
-				InsertQuery iq = new InsertQuery(new AskObject(new float[]{i*5,i*5},1,i,obj,0));
+				double xi = 1000 * rnd.NextDouble();
+				double yi = 1000 * rnd.NextDouble();
+				InsertQuery iq = new InsertQuery(new AskObject(new float[]{(float)xi,(float)yi},1,i,obj,0));
 
 				ms = new MemoryStream();
 				bf.Serialize(ms, iq);
@@ -100,7 +53,9 @@ public class Client{
 
 				if (obj2 is BoolIntResult) {
 					BoolIntResult or = (BoolIntResult) obj2;
-					Console.WriteLine(or.integer);
+					//Console.WriteLine(or.integer);
+					objectX[i]=(float) xi;
+					objectY[i] = (float)yi;
 
 				} else {
 					Console.WriteLine("Wrong kind of object.");
@@ -108,18 +63,63 @@ public class Client{
 				socket.Close();
 			}
 		}
-public static void Main(String[] args) {
-	//StartClient();
-			Start();
+		public static void updatelocation(){
+			while (move) {
+				Thread.Sleep (10);
+				for (int i = 0; i < 2; i++) {
+					currentLoc [i] = currentLoc [i] + velocity [i];
+					if (currentLoc [i] >= 1000 || currentLoc [i] <= 0) {
+						velocity [i] = -velocity [i];
+					}
+				}
 
+
+			}
+			
+		}
+		public static void updatevelocity(){
+			while (move) {
+				Thread.Sleep (200);
+				Random rnd = new Random ();
+				double theta = Math.PI * rnd.NextDouble ()-Math.PI/2;
+				velocity[0]=-(float)Math.Sin(theta)*velocity[1]+(float)Math.Cos(theta)*velocity[0];
+				velocity[1]=(float)Math.Sin(theta)*velocity[0]+(float)Math.Cos(theta)*velocity[1];
+
+
+			}
+
+		}
+		public static void Main(String[] args) {
+	//StartClient();
+			int latency=00;
+
+			//string myString = latency.ToString();
+
+			Socket sock = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			sock.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
+			BinaryFormatter bf1 = new BinaryFormatter ();
+			MemoryStream ms1 = new MemoryStream ();
+			bf1.Serialize (ms1, latency);
+
+			sock.Send (ms1.ToArray());
+			sock.Close ();
+			Start();
+			Thread mythread=new Thread(updatelocation);
+			mythread.Start();
+			Thread vmythread=new Thread(updatevelocity);
+			vmythread.Start();
 	//return 0;
 			double sum=0;
 
-			for (int i = 0; i < 20; i++) {
-				Thread.Sleep (2000);
+			for (int i = 0; i < 30; i++) {
+				Random rn = new Random ();
+
+				Thread.Sleep (rn.Next(3000,12000));
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
-				FetchQuery fq = new FetchQuery(new float[]{i*5+0.1f, i*5});
+				int targ = closeSee ();
+				FetchQuery fq = new FetchQuery(new float[]{objectX[targ],objectY[targ]});
+				fq.targetId = targ;
 				fq.queryId = i;
 				BinaryFormatter bf = new BinaryFormatter ();
 				MemoryStream ms = new MemoryStream ();
@@ -138,15 +138,34 @@ public static void Main(String[] args) {
 						Console.WriteLine ("Null returned");
 					sw.Stop();
 					TimeSpan time= sw.Elapsed;
-					sum = sum + time.TotalSeconds;
+					sum = sum + time.TotalMilliseconds;
 				}
 				socket.Close();
 			}
 
-			double average = sum / 20;
+			double average = sum / 30;
 			Console.WriteLine ("Average fetching time={0}", average);
+			move = false;
 		}
+	
+	public static int closeSee()
+	{
+		int minId=0;
+			float minD = square (currentLoc [0] - objectX [0]) + square (currentLoc [1] - objectY [0]);
+			for (int i = 1; i < numberofobjects; i++) {
+				float dis=(square (currentLoc [0] - objectX [i]) + square (currentLoc [1] - objectY [i]));
+				if (dis <= minD) {
+					minId = i;
+					minD = dis;
+				}
+			}
+			return minId;
 	}
+		public static float square(float x)
+		{
+			return x * x;
+		}
+}
 }
 //Time left
 //Latency=0; 0.002903065
