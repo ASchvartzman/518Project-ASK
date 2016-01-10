@@ -18,12 +18,12 @@ namespace Basic{
 
 
 public class Client{
-		static int numberofobjects = 100;
+		static int numberofobjects = 200;
 		static bool move=true;
 		static float[] objectX=new float[numberofobjects];
 		static float[] objectY=new float[numberofobjects];
 		static float[] currentLoc=new float[]{0f,0f};
-		static float[] velocity=new float[]{0.005f,0f}; // 0.01 units/ms
+		static float[] velocity=new float[]{1f,0f}; // 0.01 units/ms
 
 		public static void Start () {
 			BinaryFormatter bf = new BinaryFormatter ();
@@ -35,7 +35,7 @@ public class Client{
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				Random rndweight=new Random();
-				int length = rndweight.Next(100,2000);
+				int length = rndweight.Next(100,10000);
 				byte[] obj = new byte[length];
 				Random rnd = new Random ();
 				rnd.NextBytes (obj);
@@ -82,9 +82,9 @@ public class Client{
 				Thread.Sleep (200);
 				Random rnd = new Random ();
 				double theta = Math.PI * rnd.NextDouble ()-Math.PI/2;
+				float previousv0 = velocity [0];
 				velocity[0]=-(float)Math.Sin(theta)*velocity[1]+(float)Math.Cos(theta)*velocity[0];
-				velocity[1]=(float)Math.Sin(theta)*velocity[0]+(float)Math.Cos(theta)*velocity[1];
-
+				velocity[1]=(float)Math.Sin(theta)*previousv0+(float)Math.Cos(theta)*velocity[1];
 
 			}
 
@@ -114,7 +114,7 @@ public class Client{
 			for (int i = 0; i < 30; i++) {
 				Random rn = new Random ();
 
-				Thread.Sleep (rn.Next(3000,12000));
+				Thread.Sleep (rn.Next(300,1200));
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				int targ = closeSee ();

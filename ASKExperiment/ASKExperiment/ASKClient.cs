@@ -78,15 +78,15 @@ namespace ASKExperiment{
 public class Client{
 		static Dictionary<int,AskObject> idMap=new Dictionary<int, AskObject>();// targetID-> AskObject
 		static int fetchtime=400;
-		static int deletetime=100000;
+		static int deletetime=20000;
 //		static int querytime=2000;
 		static int stop=0;
-		static int numberofobjects = 100;
+		static int numberofobjects = 200;
 		static bool move=true;
 		static float[] objectX=new float[numberofobjects];
 		static float[] objectY=new float[numberofobjects];
 		static float[] currentLoc=new float[]{0f,0f};
-		static float[] velocity=new float[]{0.005f,0f}; // 0.01 units/ms
+		static float[] velocity=new float[]{1f,0f}; // 0.01 units/ms
 		static int[] objectThere=new int[3];
 		public static void updatelocation(){
 			while (move) {
@@ -141,7 +141,7 @@ public class Client{
 				Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 				socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 				Random rndweight=new Random();
-				int length = rndweight.Next(100,2000);
+				int length = rndweight.Next(100,10000);
 				byte[] obj = new byte[length];
 				Random rnd = new Random ();
 				rnd.NextBytes (obj);
@@ -225,7 +225,7 @@ public class Client{
 		}
 public static void Main(String[] args) {
 	//StartClient();
-			int latency=500;
+			int latency=00;
 
 			//string myString = latency.ToString();
 
@@ -240,8 +240,8 @@ public static void Main(String[] args) {
 			Start();
 			Thread mythread=new Thread(ConstantFetch);
 			mythread.Start();
-			//Thread DeleteThread = new Thread (DeleteSomeTargets);
-			//DeleteThread.Start ();
+			Thread DeleteThread = new Thread (DeleteSomeTargets);
+			DeleteThread.Start ();
 			Thread lmythread=new Thread(updatelocation);
 			lmythread.Start();
 			Thread vmythread=new Thread(updatevelocity);
@@ -253,7 +253,7 @@ public static void Main(String[] args) {
 				
 				Random rn = new Random ();
 
-				Thread.Sleep (rn.Next(3000,12000));
+				Thread.Sleep (rn.Next(300,1200));
 				int targ = closeSee ();
 				if (idMap.ContainsKey(targ))
 				{
@@ -261,6 +261,7 @@ public static void Main(String[] args) {
 					Console.WriteLine("Doing Good");
 				}
 				else{
+					Console.WriteLine ("Doing Bad");
 					Socket socket = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 					socket.Connect (new IPEndPoint(IPAddress.Parse("127.0.0.1"), 1234));
 					FetchQuery2 fq = new FetchQuery2(new float[]{objectX[targ],objectY[targ]});
