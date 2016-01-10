@@ -22,6 +22,7 @@ namespace BasicServer{
 		public static int maxObjectId;
 		public static Object engaged = new Object();
 		public static KdTree<float,int> KDTree;
+		public static int latency=100;
 
 		public ASKServer(Socket inputSocket)
 		{
@@ -127,12 +128,17 @@ namespace BasicServer{
 
 				AskObject askObjects = FetchObject(fetchQ)[0];
 				obj2 = new ObjectResult(askObjects, fetchQ.queryId);
-			} else {
+			} else if(obj is int){
+				latency=(int) obj;
+				Console.WriteLine("Received the latency.");
+				obj2 = 0;
+			}
+			else {
 				// TODO: 11/15/15   In case of a mismatch, I (Karan) recommend that this should throw an exception.
 				Console.WriteLine ("The Query Object wasn't of the right kind.");
 				obj2 = new TestResult("Don't know what to do?", -1);
 			}
-			Thread.Sleep(1200);
+			Thread.Sleep(latency);
 			return obj2;
 		}
 
@@ -147,10 +153,14 @@ namespace BasicServer{
 				object obj = bf.Deserialize(ms);
 
 				object obj2 = Handler(obj);
-
+				if (obj2 is int)
+				{
+				}
+				else{
 				ms = new MemoryStream();
 				bf.Serialize(ms, obj2);
 				socket.Send(ms.ToArray());
+				}
 			} catch (Exception e) {
 				Console.WriteLine (e.StackTrace);
 				Console.WriteLine (e.Message);
